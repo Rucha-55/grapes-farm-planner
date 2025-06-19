@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 
-# Set Python version
-export PYTHONUNBUFFERED=1
-
-# Upgrade pip
-python -m pip install --upgrade pip==21.3.1
-
 # Install system dependencies
 apt-get update
 apt-get install -y --no-install-recommends \
@@ -17,13 +11,10 @@ apt-get install -y --no-install-recommends \
     libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies with specific versions
-pip install --no-cache-dir \
-    numpy==1.22.4 \
-    h5py==3.6.0 \
-    protobuf==3.20.3
+# Upgrade pip
+pip install --upgrade pip
 
-# Install the rest of the requirements
+# Install Python dependencies
 pip install --no-cache-dir -r requirements.txt
 
 # Create necessary directories
