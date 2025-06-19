@@ -1,14 +1,10 @@
 services:
   - type: web
     name: grapes-farm-planner
-    env: python
-    buildCommand: chmod +x build.sh && ./build.sh
-    startCommand: gunicorn --config gunicorn_config.py app:app
+    env: docker
+    dockerfilePath: Dockerfile
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.18
       - key: PORT
         value: 10000
     plan: free
-    python:
-      version: 3.9.18
+    autoDeploy: yes
