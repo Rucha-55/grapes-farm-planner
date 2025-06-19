@@ -34,9 +34,14 @@ ENV/
 *.swp
 *.swo
 
-# Large files
+# Large files - These should be stored separately
 *.h5
 *.pkl
+*.hdf5
+*.model
+*.weights
+*.dat
+*.bin
 
 # Uploads
 uploads/
@@ -55,3 +60,11 @@ instance/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Model files
+grape_model.h
+apple_disease.h5
+grape_leaf_disease_model.h5
+grape_variety_model.pkl
+label_encoder.pkl
+scaler.pkl
