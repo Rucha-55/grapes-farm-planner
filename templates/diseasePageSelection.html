@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmAI - Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .main-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            z-index: 1000;
+            width: 85%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4CAF50;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .tab {
+            padding: 12px 25px;
+            background-color: #eaeaea;
+            border-radius: 25px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .disease-sections {
+            display: flex;
+            flex-direction: column;
+        }
+        .disease-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .disease-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .disease-visuals {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .disease-card {
+            width: 45%;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .disease-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .disease-card h3 {
+            color: #4CAF50;
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .disease-card h3 .expand-icon {
+            font-size: 20px;
+            color: #777;
+        }
+        .disease-card .disease-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eaeaea;
+        }
+        .disease-card.expanded .disease-details {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        .disease-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .disease-card ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .disease-card li {
+            margin-bottom: 8px;
+        }
+        .disease-image {
+            width: 100%;
+            height: 150px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .disease-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .detection-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .detection-options {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .detection-option {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            width: 45%;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        }
+        .detection-option h3 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        .detection-option p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .try-now-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .try-now-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background-color: #e7f3e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .severity-indicator {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .severity-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .low { background-color: #ffeb3b; }
+        .medium { background-color: #ff9800; }
+        .high { background-color: #f44336; }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #4CAF50;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        @media (max-width: 768px) {
+            .disease-card, .detection-option {
+                width: 100%;
+            }
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tab {
+                margin-bottom: 10px;
+                width: 80%;
+                text-align: center;
+            }
+        }
+
+        /* Translation Styles */
+        #translate-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        #translate-button {
+            padding: 10px;
+            background-color: #2d457e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #translate-dropdown {
+            display: none;
+            max-height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            position: absolute;
+            bottom: 50px;
+            right: 0;
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <div class="logo"><span class="logo-icon">🌱</span> FarmAI</div>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('grape')">Grape Diseases</div>
+                <div class="tab" onclick="switchTab('apple')">Apple Diseases</div>
+            </div>
+        </header>
+
+        <div class="disease-sections">
+            <!-- Grape Diseases Section -->
+            <div id="grape-section" class="disease-section active">
+                <h1>Grape Leaf Disease Detection</h1>
+                
+                <div class="info-box">
+                    <h4>Why Early Detection Matters</h4>
+                    <p>Detecting grape diseases early can save up to 80% of crops and reduce pesticide use by 50%. Our AI system can identify diseases before they become visible to the naked eye.</p>
+                </div>
+                
+                <div class="disease-visuals">
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='powderymildew.jpg') }}" alt="Powdery Mildew on Grape Leaf">
+                        </div>
+                        <h3>Powdery Mildew <span class="expand-icon">+</span></h3>
+                        <p>White powdery coating on leaves that can stunt growth and reduce yield.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot high"></span> High Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> White powdery spots on leaves and stems that eventually cover the entire surface.</p>
+                            <p><strong>Conditions:</strong> Favored by high humidity and moderate temperatures (60-80°F).</p>
+                            <p><strong>Treatment:</strong> Sulfur-based fungicides, potassium bicarbonate, or neem oil. Improve air circulation by proper pruning.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='downymildew.jpg') }}" alt="Downy Mildew on Grape Leaf">
+                        </div>
+                        <h3>Downy Mildew <span class="expand-icon">+</span></h3>
+                        <p>Yellow/brown spots on upper leaf surface with white fuzzy growth underneath.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot high"></span> High Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Yellow to brown spots on the upper leaf surface and white fuzzy growth on the underside.</p>
+                            <p><strong>Conditions:</strong> Develops in cool, wet conditions (50-75°F) with high humidity.</p>
+                            <p><strong>Treatment:</strong> Copper-based fungicides, proper canopy management, and ensuring good air circulation.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='C0121047-Black_rot_of_grape.jpg') }}"  alt="Black Rot on Grape Leaf">
+                        </div>
+                        <h3>Black Rot <span class="expand-icon">+</span></h3>
+                        <p>Small, dark brown circular lesions that may cover the entire leaf.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot medium"></span> Medium Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Brown circular spots with dark borders that may develop tiny black dots in the center.</p>
+                            <p><strong>Conditions:</strong> Warm, humid weather (70-85°F) with extended wet periods.</p>
+                            <p><strong>Treatment:</strong> Mancozeb or myclobutanil fungicides, remove infected leaves, and practice good sanitation.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='leafblight.jpg') }}" alt="Leaf Blight on Grape">
+                        </div>
+                        <h3>Leaf Blight <span class="expand-icon">+</span></h3>
+                        <p>Irregular brown spots with yellow halos that can cause defoliation.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot medium"></span> Medium Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Brown irregular spots with yellow margins, leading to premature leaf drop.</p>
+                            <p><strong>Conditions:</strong> Warm and humid weather, especially after rainy periods.</p>
+                            <p><strong>Treatment:</strong> Copper or mancozeb-based fungicides, improving drainage, and reducing overhead irrigation.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detection-container">
+                    <h2>Start Detecting Grape Diseases Now</h2>
+                    <p>Upload an image of your grape leaf for instant AI analysis and personalized treatment recommendations.</p>
+                    <a class="try-now-btn" href="/disease-grape">Try Grape Disease Detection</a>
+                </div>
+            </div>
+            
+            <!-- Apple Diseases Section -->
+            <div id="apple-section" class="disease-section">
+                <h1>Apple Fruit Disease Detection</h1>
+                
+                <div class="info-box">
+                    <h4>Protect Your Apple Harvest</h4>
+                    <p>Apple diseases can reduce marketable yield by up to 70%. Our AI detection system can identify diseases with 95% accuracy, allowing for targeted treatment.</p>
+                </div>
+                
+                <div class="disease-visuals">
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='applescab.jpg') }}" alt="Apple Scab">
+                        </div>
+                        <h3>Apple Scab <span class="expand-icon">+</span></h3>
+                        <p>Olive-green to brown spots on fruit that can crack and deform.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot high"></span> High Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Velvety olive-green to brown spots on fruit that can cause cracking and deformation.</p>
+                            <p><strong>Conditions:</strong> Cool, wet spring weather with temperatures between 55-75°F.</p>
+                            <p><strong>Treatment:</strong> Captan or mancozeb fungicides, proper sanitation, and resistant varieties.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='cedarrust.jpg') }}" alt="Cedar Apple Rust">
+                        </div>
+                        <h3>Cedar Apple Rust <span class="expand-icon">+</span></h3>
+                        <p>Bright orange or yellow spots that can cause premature fruit drop.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot medium"></span> Medium Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Bright orange or yellow spots on fruit surface, sometimes with a red border.</p>
+                            <p><strong>Conditions:</strong> Requires both apple trees and juniper/cedar trees to complete its life cycle.</p>
+                            <p><strong>Treatment:</strong> Remove nearby juniper/cedar trees, apply fungicides like myclobutanil in spring.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='applerot.jpg') }}" alt="Apple Rot">
+                        </div>
+                        <h3>Apple Rot <span class="expand-icon">+</span></h3>
+                        <p>Brown, soft spots that spread rapidly and can destroy entire fruits.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot high"></span> High Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Brown circular spots that become soft and sunken, often with concentric rings.</p>
+                            <p><strong>Conditions:</strong> Warm, wet weather during fruit development and ripening.</p>
+                            <p><strong>Treatment:</strong> Preventative fungicides, careful handling to avoid wounds, and proper storage conditions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disease-card" onclick="toggleExpand(this)">
+                        <div class="disease-image">
+                            <img src="{{ url_for('static', filename='bitterpit.jpg') }}" alt="Bitter Pit">
+                        </div>
+                        <h3>Bitter Pit <span class="expand-icon">+</span></h3>
+                        <p>Small, dark, sunken spots primarily near the calyx end of the fruit.</p>
+                        
+                        <div class="disease-details">
+                            <div class="severity-indicator">
+                                <span class="severity-dot low"></span> Low Severity
+                            </div>
+                            <p><strong>Symptoms:</strong> Small, dark, sunken spots on the fruit surface, primarily near the bottom of the fruit.</p>
+                            <p><strong>Conditions:</strong> Calcium deficiency, often worsened by irregular watering and excessive nitrogen.</p>
+                            <p><strong>Treatment:</strong> Calcium sprays, balanced fertilization, and consistent irrigation practices.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detection-container">
+                    <h2>Start Detecting Apple Diseases Now</h2>
+                    <p>Upload an image of your apple fruit for instant AI analysis and customized treatment recommendations.</p>
+                    <a class="try-now-btn" href="/disease-apple">Try Apple Disease Detection</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2023 FarmAI. All rights reserved.
+    </footer>
+    
+    <script>
+        function switchTab(tab) {
+            // Hide all sections
+            document.querySelectorAll('.disease-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(tab + '-section').classList.add('active');
+            
+            // Update tab styling
+            document.querySelectorAll('.tab').forEach(tabElement => {
+                tabElement.classList.remove('active');
+            });
+            
+            // Find and activate the clicked tab
+            event.target.classList.add('active');
+        }
+        
+        function toggleExpand(card) {
+            if (card.classList.contains('expanded')) {
+                card.classList.remove('expanded');
+                card.querySelector('.expand-icon').textContent = '+';
+            } else {
+                card.classList.add('expanded');
+                card.querySelector('.expand-icon').textContent = '-';
+            }
+        }
+
+        // Translation-related scripts
+        function loadGoogleTranslateScript() {
+            const script = document.createElement("script");
+            script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+            script.type = "text/javascript";
+            document.body.appendChild(script);
+        }
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: "en", // Default page language
+                    includedLanguages: `
+        as,bn,gu,hi,kn,ks,ml,mr,ne,or,pa,sd,ta,te,ur,sa,bo,mai,brx,sat,dz,doi,mni,kok,lus,kha,
+      en
+      `,
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                },
+                "google_translate_element"
+            );
+        }
+
+        // Translation dropdown toggle
+        function initTranslateButton() {
+            const translateButton = document.getElementById("translate-button");
+            const translateDropdown = document.getElementById("translate-dropdown");
+
+            translateButton.addEventListener("click", function () {
+                translateDropdown.style.display = 
+                    translateDropdown.style.display === "none" || translateDropdown.style.display === "" 
+                    ? "block" 
+                    : "none";
+            });
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (!translateButton.contains(event.target) && !translateDropdown.contains(event.target)) {
+                    translateDropdown.style.display = "none";
+                }
+            });
+        }
+
+        // Load scripts and initialize
+        loadGoogleTranslateScript();
+        initTranslateButton();
+    </script>
+
+    <!-- Translation Container -->
+    <div id="translate-container">
+        <button id="translate-button">🌐 Translate</button>
+        <div id="translate-dropdown">
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+</body>
+</html>
