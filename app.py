@@ -1,8 +1,14 @@
+# Suppress TensorFlow and Keras logs
 import os
-# Suppress TensorFlow info and warning messages
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=INFO, 1=WARNING, 2=ERROR, 3=FATAL
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0=INFO, 1=WARNING, 2=ERROR, 3=FATAL
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations that cause logs
 
-from flask import Flask, request, jsonify, render_template, render_template, session, redirect, url_for, flash , send_from_directory
+# Suppress warnings
+import warnings
+warnings.filterwarnings('ignore')
+
+# Now import other libraries
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for, flash, send_from_directory
 from flask_cors import CORS
 import requests
 import os
