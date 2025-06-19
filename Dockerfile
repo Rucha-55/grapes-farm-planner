@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --upgrade pip==21.3.1 && \
+RUN pip install --upgrade pip==22.0.4 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
