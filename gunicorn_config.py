@@ -1,7 +1,7 @@
 import os
 
 # Server socket
-bind = '0.0.0.0:' + os.environ.get('PORT', '10000')
+bind = '0.0.0.0:10000'
 
 # Worker processes
 workers = 2
