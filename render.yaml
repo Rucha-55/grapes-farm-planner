@@ -2,13 +2,19 @@ services:
   - type: web
     name: grapes-farm-planner
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --config gunicorn_config.py app:app
+    buildCommand: |
+      pip install --upgrade pip && \
+      pip install -r requirements.txt
+    startCommand: gunicorn --bind=0.0.0.0:$PORT --workers=4 --threads=2 app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
       - key: PORT
         value: 10000
+      - key: TF_CPP_MIN_LOG_LEVEL
+        value: 3
+      - key: TF_ENABLE_ONEDNN_OPTS
+        value: 0
     plan: free
     python:
       version: 3.10.12
