@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasyavardhana</title>
+    <!-- Existing CSS remains unchanged -->
+    <style>
+        /* Existing styles from the original document */
+        :root {
+            --primary: #2ecc71;
+            --secondary: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --accent: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center; /* Ensure items are vertically centered */
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Style for the Login/Sign Up button */
+        .btn-login {
+            background-color: var(--secondary); /* Use a different color for distinction */
+            margin-left: 10px; /* Add some spacing between buttons */
+        }
+        
+        .btn-login:hover {
+            background-color: #229954; /* Darker shade for hover effect */
+        }
+        
+        /* Rest of your CSS remains unchanged */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('static/t7.png') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 150px 20px 100px;
+            margin-top: 60px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .features {
+            padding: 80px 0;
+        }
+        
+        h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--primary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            width: 100%;
+            opacity: 0.1;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: #7f8c8d;
+        }
+        
+        .demo {
+            background-color: var(--dark);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .demo h2 {
+            color: white;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #34495e;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        .demo-tab {
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .demo-content {
+            display: none;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            min-height: 300px;
+        }
+        
+        .demo-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .demo-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        label {
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .chatbot-container {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-break: break-word;
+        }
+        
+        .user-message {
+            background-color: var(--primary);
+            margin-left: auto;
+        }
+        
+        .bot-message {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex-grow: 1;
+        }
+        
+        .voice-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .voice-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .weather-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .weather-display {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .weather-icon {
+            font-size: 4rem;
+            color: var(--accent);
+        }
+        
+        .weather-info {
+            flex-grow: 1;
+        }
+        
+        .temp {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .location {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .crop-suggestions {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .crop-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .crop-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        
+        .sensor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .sensor-card {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .sensor-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+        
+        .sensor-label {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .sensor-status {
+            font-size: 0.9rem;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .optimal {
+            background-color: var(--primary);
+        }
+        
+        .warning {
+            background-color: var(--accent);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .sensor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        .auth-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1.1rem;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .auth-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* Falling Leaf Animation */
+        .leaf-animation {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(52, 199, 89, 0.5);
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+            animation: leafFall linear infinite;
+        }
+
+        @keyframes leafFall {
+            0% {
+                transform: translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        /* Additional styles for translation button and dropdown */
+        #translate-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        #translate-button {
+            padding: 10px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        #translate-button:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        #translate-dropdown {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 250px;
+        }
+        
+        /* Style for Google Translate dropdown */
+        .goog-te-combo {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .consultant-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.consultant-btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Ensure the buttons are clickable */
+.feature-card {
+    position: relative;
+    z-index: 1;
+}
+
+.feature-card a {
+    position: relative;
+    z-index: 2;
+}
+    </style>
+</head>
+<body>
+    <!-- Rest of the existing HTML remains the same -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-icon">🌱</span> Sasyavardhana
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#demo">Try Demo</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="{{ url_for('login') }}" class="btn btn-login">Login</a></li>
+                    <li><a href="{{ url_for('signup') }}" class="btn btn-signup">Sign Up</a></li> 
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Smart Farming with AI</h1>
+            <p>Revolutionize your agricultural practices with our cutting-edge AI technology. Get precise yield predictions, disease detection, weather alerts, and intelligent crop recommendations.</p>
+            <a href="#demo" class="btn pulse-animation">Try Our Demo</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Our Features</h2>
+            <div class="features-grid">
+                <div class="feature-card" id="consultant-card">
+                    <div class="feature-icon">👨‍🌾</div>
+                    <h3 id="consultant-title">Consultant</h3>
+                    <p id="consultant-description">Provide expert advice to farmers and help them optimize their cultivation.</p>
+                    <div class="consultant-buttons">
+                        <a href="{{ url_for('consultant_signup') }}" class="btn consultant-btn">Sign Up</a>
+                        <a href="{{ url_for('consultant_login') }}" class="btn btn-login consultant-btn">Login</a>
+                    </div>
+                </div>
+                <div class="feature-card" id="disease-card" onclick="window.location.href='/login'">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Disease Detection</h3>
+                    <p>Upload photos of your crops to identify diseases instantly with our advanced AI model.</p>
+                </div>
+                <div class="feature-card" id="yield-card" onclick="window.location.href='/login'">
+                    <div class="feature-icon">📊</div>
+                    <h3>Grape Farm Planner</h3>
+                    <p>Grape Farm Planner is an AI-powered interactive system designed to assist grape farmers in managing their crop lifecycle efficiently.</p>
+                </div>
+                <div class="feature-card" id="chatbot-card" onclick="window.location.href='/login'">
+                    <div class="feature-icon">💬</div>
+                    <h3>AI Chatbot</h3>
+                    <p>Multilingual support with voice input/output for all your farming questions.</p>
+                </div>
+                <div class="feature-card" id="weather-card" onclick="window.location.href='/login'">
+                    <div class="feature-icon">🌦️</div>
+                    <h3>Weather Alerts</h3>
+                    <p>Receive timely weather notifications and location-specific crop suggestions.</p>
+                </div>
+                <div class="feature-card" id="sensor-card" onclick="window.location.href='/login'">
+                    <div class="feature-icon">🌡</div>
+                    <h3>Soil Monitoring</h3>
+                    <p>Track temperature and moisture levels in your soil for optimal growing conditions.</p>
+                </div>
+                <div class="feature-card" id="analytics-card" onclick="window.location.href='/login'">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Access</h3>
+                    <p>Monitor and manage your farm from anywhere using our mobile-friendly platform.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo" id="demo">
+        <div class="container">
+            <h2>Try Our Services</h2>
+            <div class="demo-container">
+                <div class="demo-tabs">
+                    <button class="demo-tab active" data-tab="disease">Disease Detection</button>
+                    <button class="demo-tab" data-tab="yield">Yield Prediction</button>
+                    <button class="demo-tab" data-tab="chatbot">AI Chatbot</button>
+                    <button class="demo-tab" data-tab="weather">Weather & Crops</button>
+                    <button class="demo-tab" data-tab="sensors">Soil Sensors</button>
+                </div>
+
+                <!-- Disease Detection Demo -->
+                <div class="demo-content active" id="disease-content">
+                    <form class="demo-form">
+                        <div class="form-group">
+                            <label for="crop-type">Crop Type</label>
+                            <select id="crop-type">
+                                <option value="">Select Crop Type</option>
+                                <option value="rice">Rice</option>
+                                <option value="wheat">Wheat</option>
+                                <option value="corn">Corn</option>
+                                <option value="potato">Potato</option>
+                                <option value="tomato">Tomato</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="crop-image">Upload Image</label>
+                            <input type="file" id="crop-image" accept="image/">
+                        </div>
+                        <button type="button" class="btn" id="analyze-btn">Analyze Disease</button>
+                        <div id="disease-result" style="margin-top: 20px; text-align: center; display: none;">
+                            <h3>Analysis Result</h3>
+                            <p>Your crop appears to have <strong>Early Blight</strong>.</p>
+                            <p>Confidence: <strong>92%</strong></p>
+                            <div style="margin-top: 10px;">
+                                <h4>Recommended Action:</h4>
+                                <p>Apply copper-based fungicide and ensure proper spacing between plants for better air circulation.</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Yield Prediction Demo -->
+                <div class="demo-content" id="yield-content">
+                    <form class="demo-form">
+                        <div class="form-group">
+                            <label for="yield-crop">Crop Type</label>
+                            <select id="yield-crop">
+                                <option value="">Select Crop Type</option>
+                                <option value="rice">Rice</option>
+                                <option value="wheat">Wheat</option>
+                                <option value="corn">Corn</option>
+                                <option value="soybean">Soybean</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="soil-type">Soil Type</label>
+                            <select id="soil-type">
+                                <option value="">Select Soil Type</option>
+                                <option value="clay">Clay</option>
+                                <option value="loam">Loam</option>
+                                <option value="sandy">Sandy</option>
+                                <option value="silt">Silt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="area-size">Area Size (in acres)</label>
+                            <input type="number" id="area-size" placeholder="Enter area size">
+                        </div>
+                        <div class="form-group">
+                            <label for="irrigation">Irrigation Method</label>
+                            <select id="irrigation">
+                                <option value="">Select Method</option>
+                                <option value="drip">Drip Irrigation</option>
+                                <option value="sprinkler">Sprinkler</option>
+                                <option value="flood">Flood Irrigation</option>
+                                <option value="rain">Rain-fed</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn" id="predict-btn">Predict Yield</button>
+                        <div id="yield-result" style="margin-top: 20px; text-align: center; display: none;">
+                            <h3>Yield Prediction</h3>
+                            <p>Estimated yield: <strong>4.8 tons/acre</strong></p>
+                            <p>Expected total: <strong>24 tons</strong></p>
+                            <p>This is <strong>15% higher</strong> than last year's average in your region.</p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Chatbot Demo -->
+                <div class="demo-content" id="chatbot-content">
+                    <div class="chatbot-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message bot-message">Hello! I'm your Sasyavardhana assistant. How can I help you today?</div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chat-input" placeholder="Type your question...">
+                            <button class="voice-btn" id="voice-btn">🎤</button>
+                            <button class="btn" id="send-btn">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather & Crops Demo -->
+                <div class="demo-content" id="weather-content">
+                    <div class="weather-container">
+                        <div class="form-group" style="width: 100%;">
+                            <label for="location">Enter Your Location</label>
+                            <input type="text" id="location" placeholder="Enter city or zip code">
+                            <button type="button" class="btn" style="margin-top: 10px;" id="weather-btn">Get Weather & Suggestions</button>
+                        </div>
+                        <div class="weather-display" id="weather-display" style="display: none;">
+                            <div class="weather-icon">☀️</div>
+                            <div class="weather-info">
+                                <div class="temp">32°C</div>
+                                <div class="location">Bangalore, Karnataka</div>
+                                <div>Humidity: 65% | Wind: 12 km/h</div>
+                                <div>5-day forecast: Mostly sunny with occasional showers</div>
+                            </div>
+                        </div>
+                        <div class="crop-suggestions" id="crop-suggestions" style="display: none;">
+                            <h3>Recommended Crops for Your Region</h3>
+                            <p>Based on current weather and soil conditions:</p>
+                            <div class="crop-list">
+                                <span class="crop-badge">Rice</span>
+                                <span class="crop-badge">Millet</span>
+                                <span class="crop-badge">Groundnut</span>
+                                <span class="crop-badge">Sunflower</span>
+                                <span class="crop-badge">Pulses</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soil Sensors Demo -->
+                <div class="demo-content" id="sensors-content">
+                    <div class="sensor-container">
+                        <div class="sensor-card">
+                            <div class="sensor-label">Soil Temperature</div>
+                            <div class="sensor-value">24.5°C</div>
+                            <div class="sensor-status optimal">Optimal</div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-label">Soil Moisture</div>
+                            <div class="sensor-value">42%</div>
+                            <div class="sensor-status warning">Slightly Low</div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-label">pH Level</div>
+                            <div class="sensor-value">6.8</div>
+                            <div class="sensor-status optimal">Optimal</div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-label">Nutrient Index</div>
+                            <div class="sensor-value">72</div>
+                            <div class="sensor-status optimal">Good</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login/Sign Up Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" data-tab="signup">Sign Up</a></p>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-contact">Contact Number</label>
+                    <input type="tel" id="signup-contact" placeholder="Enter your contact number" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+                <p class="auth-switch">Already have an account? <a href="#" data-tab="login">Login</a></p>
+            </form>
+        </div>
+    </div>
+    <footer id="contact">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>About Sasyavardhana</h3>
+                <p>We're revolutionizing agriculture with AI-powered solutions that help farmers increase yield, reduce costs, and implement sustainable practices.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#demo">Demo</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul class="footer-links">
+                    <li>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afc6c1c9c0efc9ceddc2cec681dbcaccc7">sasyavardhana@gmail.com</a></li>
+                    <li>Phone: +91 98765 43210</li>
+                    <li>Address:Sasyavardhana Park, Nashik</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <p>Follow us on social media for updates and farming tips.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon">f</a>
+                    <a href="#" class="social-icon">t</a>
+                    <a href="#" class="social-icon">in</a>
+                    <a href="#" class="social-icon">ig</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 Sasyavardhana. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+    <div class="leaf-animation" id="leafContainer"></div>
+
+    <!-- Add the translation container just before the closing body tag -->
+    <div id="translate-container">
+        <button id="translate-button">🌐 Translate</button>
+        <div id="translate-dropdown">
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+
+    <!-- Existing scripts remain unchanged -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        function createLeaves() {
+            const leafContainer = document.getElementById('leafContainer');
+            const containerWidth = leafContainer.clientWidth;
+            
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                
+                // Randomize leaf properties
+                const left = Math.random() * containerWidth;
+                const size = Math.random() * 15 + 10;
+                const duration = Math.random() * 10 + 8;
+                const delay = Math.random() * 5;
+                
+                // Set leaf styles
+                leaf.style.left = `${left}px`;
+                leaf.style.width = `${size}px`;
+                leaf.style.height = `${size}px`;
+                leaf.style.animationDuration = `${duration}s`;
+                leaf.style.animationDelay = `${delay}s`;
+                
+                // Add leaf to container
+                leafContainer.appendChild(leaf);
+            }
+        }
+
+        // Show Authentication Modal
+        function showAuthModal() {
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'flex';
+        }
+
+        // Close Modal
+        const closeModalBtn = document.querySelector('.close-modal');
+        closeModalBtn.addEventListener('click', () => {
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'none';
+        });
+
+        // Close Modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const authModal = document.getElementById('auth-modal');
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+            }
+        });
+
+        // Switch between Login and Sign Up Tabs
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        const authSwitchLinks = document.querySelectorAll('.auth-switch a');
+
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+
+                // Update active tab
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show corresponding form
+                authForms.forEach(form => form.classList.remove('active'));
+                document.getElementById(`${target}-form`).classList.add('active');
+            });
+        });
+
+        // Switch between Login and Sign Up using links
+        authSwitchLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.dataset.tab;
+
+                // Update active tab
+                authTabs.forEach(t => t.classList.remove('active'));
+                document.querySelector(`.auth-tab[data-tab="${target}"]`).classList.add('active');
+
+                // Show corresponding form
+                authForms.forEach(form => form.classList.remove('active'));
+                document.getElementById(`${target}-form`).classList.add('active');
+            });
+        });
+
+        // Handle Login Form Submission
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Simulate login (replace with actual API call)
+            console.log('Logging in with:', email, password);
+            alert('Login successful!');
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'none';
+        });
+
+        // Handle Sign Up Form Submission
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const contact = document.getElementById('signup-contact').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Simulate signup (replace with actual API call)
+            console.log('Signing up with:', username, email, contact, password);
+            alert('Signup successful!');
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'none';
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createLeaves();
+            
+            // Add event listener for login/signup button
+            document.getElementById('login-signup-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAuthModal();
+            });
+            
+            // Tab Switching Functionality for demo tabs
+            const tabs = document.querySelectorAll('.demo-tab');
+            const contents = document.querySelectorAll('.demo-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tab;
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    contents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${target}-content`).classList.add('active');
+                });
+            });
+            
+            // Disease Detection Demo
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const diseaseResult = document.getElementById('disease-result');
+            
+            analyzeBtn.addEventListener('click', () => {
+                // Simulate loading
+                analyzeBtn.textContent = 'Analyzing...';
+                
+                // Show result after 2 seconds (simulating processing)
+                setTimeout(() => {
+                    diseaseResult.style.display = 'block';
+                    analyzeBtn.textContent = 'Analyze Disease';
+                }, 2000);
+            });
+            
+            // Yield Prediction Demo
+            const predictBtn = document.getElementById('predict-btn');
+            const yieldResult = document.getElementById('yield-result');
+            
+            predictBtn.addEventListener('click', () => {
+                // Simulate loading
+                predictBtn.textContent = 'Processing...';
+                
+                // Show result after 2 seconds
+                setTimeout(() => {
+                    yieldResult.style.display = 'block';
+                    predictBtn.textContent = 'Predict Yield';
+                }, 2000);
+            });
+            
+            // Chatbot Demo
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Sample responses for demo
+            const botResponses = {
+                'hi': 'Hello! How can I assist you with your farming today?',
+                'hello': 'Hi there! What farming information do you need?',
+                'crops': 'Based on your location and current season, I would recommend wheat, barley, and mustard for planting.',
+                'weather': 'The current weather in your area is sunny with a temperature of 28°C. It\'s a good time to irrigate your crops.',
+                'disease': 'If you suspect a disease, please upload a photo of the affected crop for analysis.',
+                'yield': 'To predict your crop yield, please provide details about your crop type, soil type, and irrigation method.',
+                'help': 'I can help you with disease detection, yield prediction, weather updates, and crop recommendations. Just ask!',
+                'default': 'I\'m sorry, I didn\'t understand that. Could you please rephrase or ask another question?'
+            };
+            
+            sendBtn.addEventListener('click', () => {
+                const userMessage = chatInput.value.trim();
+                if (userMessage) {
+                    // Add user message to chat
+                    const userMsgElement = document.createElement('div');
+                    userMsgElement.classList.add('message', 'user-message');
+                    userMsgElement.textContent = userMessage;
+                    chatMessages.appendChild(userMsgElement);
+                    
+                    // Clear input
+                    chatInput.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        const botResponse = botResponses[userMessage.toLowerCase()] || botResponses['default'];
+                        const botMsgElement = document.createElement('div');
+                        botMsgElement.classList.add('message', 'bot-message');
+                        botMsgElement.textContent = botResponse;
+                        chatMessages.appendChild(botMsgElement);
+                        
+                        // Scroll to the bottom of the chat
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1000);
+                }
+            });
+            
+            // Weather & Crops Demo
+            const weatherBtn = document.getElementById('weather-btn');
+            const weatherDisplay = document.getElementById('weather-display');
+            const cropSuggestions = document.getElementById('crop-suggestions');
+            
+            weatherBtn.addEventListener('click', () => {
+                const location = document.getElementById('location').value.trim();
+                if (location) {
+                    // Simulate loading
+                    weatherBtn.textContent = 'Fetching...';
+                    
+                    // Show result after 2 seconds
+                    setTimeout(() => {
+                        weatherDisplay.style.display = 'flex';
+                        cropSuggestions.style.display = 'block';
+                        weatherBtn.textContent = 'Get Weather & Suggestions';
+                    }, 2000);
+                }
+            });
+        });
+        // Translation functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const translateButton = document.getElementById('translate-button');
+            const translateDropdown = document.getElementById('translate-dropdown');
+
+            // Toggle Translate Dropdown
+            translateButton.addEventListener('click', function () {
+                translateDropdown.style.display = 
+                    translateDropdown.style.display === 'none' || 
+                    translateDropdown.style.display === '' ? 'block' : 'none';
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!translateContainer.contains(event.target)) {
+                    translateDropdown.style.display = 'none';
+                }
+            });
+
+            // Load Google Translate Script Dynamically
+            function loadGoogleTranslateScript() {
+                const script = document.createElement('script');
+                script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                script.type = 'text/javascript';
+                document.body.appendChild(script);
+            }
+
+            // Initialize Google Translate Element
+            window.googleTranslateElementInit = function() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en', // Default page language
+                    includedLanguages: `
+                        as,bn,gu,hi,kn,ks,ml,mr,ne,or,pa,sd,ta,te,ur,sa,bo,mai,brx,sat,dz,doi,mni,kok,lus,kha,en
+                    `,
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                }, 'google_translate_element');
+            };
+
+            // Load the Translate Script
+            loadGoogleTranslateScript();
+        });
+    </script>
+</body>
+</html>

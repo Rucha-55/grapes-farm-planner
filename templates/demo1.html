@@ -1,0 +1,1719 @@
+```html type="html" project="Sasyavardhana Website" file="index.html"
+[v0-no-op-code-block-prefix]<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasyavardhana</title>
+    <style>
+        /* Root variables */
+        :root {
+            --primary: #2ecc71;
+            --secondary: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --accent: #f39c12;
+        }
+        
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9998; /* Increased z-index to be just below the translation widget */
+            transition: all 0.3s ease;
+        }
+
+        /* Add this new CSS rule after the header styles */
+        body.translated-ltr header,
+        body.translated-rtl header {
+            top: 40px !important; /* Add space for Google Translate bar */
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+        
+        nav {
+            position: relative;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: block;
+            white-space: nowrap;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Login/Sign Up button */
+        .btn-login {
+            background-color: var(--secondary);
+            margin-left: 10px;
+        }
+        
+        .btn-login:hover {
+            background-color: #229954;
+        }
+        
+        /* Hero section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('static/t7.png') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 130px 20px 80px;
+            margin-top: 60px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Features section */
+        .features {
+            padding: 60px 0;
+        }
+        
+        h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--primary);
+            line-height: 1.3;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            width: 100%;
+            opacity: 0.1;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+        
+        /* Demo section */
+        .demo {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .demo h2 {
+            color: white;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #34495e;
+            border-radius: 10px;
+            padding: 25px 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .demo-tab {
+            padding: 8px 15px;
+            margin: 0 3px 5px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .demo-tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .demo-content {
+            display: none;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            min-height: 300px;
+        }
+        
+        .demo-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .demo-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        label {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        input, select, textarea {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Chatbot */
+        .chatbot-container {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-break: break-word;
+        }
+        
+        .user-message {
+            background-color: var(--primary);
+            margin-left: auto;
+        }
+        
+        .bot-message {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .chat-input input {
+            flex-grow: 1;
+            min-width: 0; /* Allows flex items to shrink below content size */
+        }
+        
+        .voice-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .voice-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Weather */
+        .weather-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .weather-display {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        
+        .weather-icon {
+            font-size: 3.5rem;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+        
+        .weather-info {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        
+        .temp {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .location {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        .crop-suggestions {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .crop-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .crop-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        
+        /* Sensors */
+        .sensor-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .sensor-card {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .sensor-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+        
+        .sensor-label {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        .sensor-status {
+            font-size: 0.9rem;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .optimal {
+            background-color: var(--primary);
+        }
+        
+        .warning {
+            background-color: var(--accent);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 0 15px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        .auth-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            padding: 8px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1.1rem;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .auth-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            color: var(--dark);
+            background-color: white;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Falling Leaf Animation */
+        .leaf-animation {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(52, 199, 89, 0.5);
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+            animation: leafFall linear infinite;
+        }
+
+        @keyframes leafFall {
+            0% {
+                transform: translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Translation Container Styles */
+        #translate-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        #translate-button {
+            padding: 10px;
+            background-color: #2d457e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        #translate-dropdown {
+            display: none;
+            max-height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        
+        /* Enhanced Responsive Styles */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 0 30px;
+            }
+            
+            .features-grid {
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .feature-icon {
+                font-size: 2.2rem;
+            }
+            
+            .demo-container {
+                max-width: 90%;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+            
+            .hero {
+                padding: 120px 15px 70px;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .features, .demo {
+                padding: 50px 0;
+            }
+            
+            .demo-tab {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .footer-grid {
+                gap: 20px;
+            }
+            
+            /* Mobile menu styles */
+            .menu-toggle {
+                display: block;
+            }
+            
+            nav ul {
+                position: fixed;
+                top: 60px;
+                left: -100%;
+                width: 100%;
+                height: auto;
+                background-color: var(--primary);
+                flex-direction: column;
+                padding: 20px 0;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+            }
+            
+            nav ul.active {
+                left: 0;
+            }
+            
+            nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            
+            nav ul li a {
+                display: block;
+                padding: 10px;
+                width: 100%;
+            }
+            
+            .btn-login {
+                margin: 10px auto 0;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .logo-icon {
+                font-size: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.2rem;
+            }
+            
+            .feature-icon {
+                font-size: 2rem;
+            }
+            
+            .demo-container {
+                padding: 20px 10px;
+            }
+            
+            .demo-tabs {
+                gap: 5px;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 15px;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .demo-tab {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                margin: 0 2px;
+                white-space: nowrap;
+            }
+            
+            .chat-input {
+                flex-direction: column;
+            }
+            
+            .chat-input .btn {
+                width: 100%;
+            }
+            
+            .chat-input .voice-btn {
+                align-self: flex-end;
+            }
+            
+            .weather-display {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .weather-icon {
+                margin-bottom: 10px;
+            }
+            
+            .sensor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .footer-section {
+                text-align: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .hero {
+                padding: 100px 10px 60px;
+            }
+            
+            .feature-card {
+                padding: 15px;
+            }
+            
+            .feature-icon {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+            
+            .feature-card p {
+                font-size: 0.9rem;
+            }
+            
+            .demo-content {
+                padding: 10px;
+            }
+            
+            .sensor-value {
+                font-size: 1.8rem;
+            }
+            
+            .sensor-label {
+                font-size: 1rem;
+            }
+            
+            .modal-content {
+                padding: 20px 15px;
+            }
+            
+            .auth-tab {
+                padding: 6px 10px;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) {
+            .btn:hover {
+                transform: none;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            .feature-card:hover {
+                transform: none;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+            
+            .feature-card:active {
+                transform: translateY(-5px);
+            }
+            
+            .btn:active {
+                background-color: #e67e22;
+                transform: translateY(-2px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-icon">🌱</span> <span id="logo-text">Sasyavardhana</span>
+            </div>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu">☰</button>
+            <nav>
+                <ul id="nav-menu">
+                    <li><a href="#features" id="features-link">Features</a></li>
+                    <li><a href="#demo" id="demo-link">Try Demo</a></li>
+                    <li><a href="#contact" id="contact-link">Contact</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="btn btn-login" id="logout-btn">Log out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1 id="hero-title">Smart Farming with AI</h1>
+            <p id="hero-description">Revolutionize your agricultural practices with our cutting-edge AI technology. Get precise yield predictions, disease detection, weather alerts, and intelligent crop recommendations.</p>
+            <a href="#demo" class="btn pulse-animation" id="try-demo-btn">Try Our Demo</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2 id="features-title">Our Features</h2>
+            <div class="features-grid">
+                
+                <div class="feature-card" id="disease-card" onclick="window.location.href='/disease-detection'">
+                    <div class="feature-icon">🔬</div>
+                    <h3 id="disease-title">Disease Detection</h3>
+                    <p id="disease-description">Upload photos of your crops to identify diseases instantly with our advanced AI model.</p>
+                </div>
+                <div class="feature-card" id="yield-card" onclick="window.location.href='/farm_planner'">
+                    <div class="feature-icon">📊</div>
+                    <h3 id="yield-title">Grape Farm Planner</h3>
+                    <p id="yield-description">Grape Farm Planner is an AI-powered interactive system designed to assist grape farmers in managing their crop lifecycle efficiently.</p>
+                </div>
+                <div class="feature-card" id="chatbot-card" onclick="window.location.href='/chatbot'">
+                    <div class="feature-icon">💬</div>
+                    <h3 id="chatbot-title">AI Chatbot</h3>
+                    <p id="chatbot-description">Multilingual support with voice input/output for all your farming questions.</p>
+                </div>
+                <div class="feature-card" id="weather-card" onclick="window.location.href='/weather1'">
+                    <div class="feature-icon">🌦️</div>
+                    <h3 id="weather-title">Weather Alerts</h3>
+                    <p id="weather-description">Receive timely weather notifications and location-specific crop suggestions.</p>
+                </div>
+                <div class="feature-card" id="sensor-card" onclick="window.location.href='/grapetyperec'">
+                    <div class="feature-icon">🌡️</div>
+                    <h3 id="sensor-title">Grape Variety Predictor</h3>
+                    <p id="sensor-description">Track temperature and moisture levels in your soil for optimal growing conditions.</p>
+                </div>
+                <div class="feature-card" id="analytics-card" onclick="window.location.href='/disease_weather'">
+                    <div class="feature-icon">📱</div>
+                    <h3 id="analytics-title">Disease Prediction by Weather</h3>
+                    <p id="analytics-description">Monitor and manage your farm from anywhere using our mobile-friendly platform.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo" id="demo">
+        <div class="container">
+            <h2 id="demo-title">Try Our Services</h2>
+            <div class="demo-container">
+                <div class="demo-tabs">
+                    <button class="demo-tab active" data-tab="disease" id="disease-tab">Disease Detection</button>
+                    <button class="demo-tab" data-tab="yield" id="yield-tab">Yield Prediction</button>
+                    <button class="demo-tab" data-tab="chatbot" id="chatbot-tab">AI Chatbot</button>
+                    <button class="demo-tab" data-tab="weather" id="weather-tab">Weather & Crops</button>
+                    <button class="demo-tab" data-tab="sensors" id="sensors-tab">Soil Sensors</button>
+                </div>
+
+                <!-- Disease Detection Demo -->
+                <div class="demo-content active" id="disease-content">
+                    <form class="demo-form">
+                        <div class="form-group">
+                            <label for="crop-type" id="crop-type-label">Crop Type</label>
+                            <select id="crop-type">
+                                <option value="" id="select-crop-option">Select Crop Type</option>
+                                <option value="rice" id="rice-option">Rice</option>
+                                <option value="wheat" id="wheat-option">Wheat</option>
+                                <option value="corn" id="corn-option">Corn</option>
+                                <option value="potato" id="potato-option">Potato</option>
+                                <option value="tomato" id="tomato-option">Tomato</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="crop-image" id="crop-image-label">Upload Image</label>
+                            <input type="file" id="crop-image" accept="image/*">
+                        </div>
+                        <button type="button" class="btn" id="analyze-btn">Analyze Disease</button>
+                        <div id="disease-result" style="margin-top: 20px; text-align: center; display: none;">
+                            <h3 id="analysis-result-title">Analysis Result</h3>
+                            <p id="disease-result-text">Your crop appears to have <strong>Early Blight</strong>.</p>
+                            <p id="confidence-text">Confidence: <strong>92%</strong></p>
+                            <div style="margin-top: 10px;">
+                                <h4 id="recommended-action-title">Recommended Action:</h4>
+                                <p id="recommended-action-text">Apply copper-based fungicide and ensure proper spacing between plants for better air circulation.</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Yield Prediction Demo -->
+                <div class="demo-content" id="yield-content">
+                    <form class="demo-form">
+                        <div class="form-group">
+                            <label for="yield-crop" id="yield-crop-label">Crop Type</label>
+                            <select id="yield-crop">
+                                <option value="" id="select-yield-crop">Select Crop Type</option>
+                                <option value="rice" id="yield-rice">Rice</option>
+                                <option value="wheat" id="yield-wheat">Wheat</option>
+                                <option value="corn" id="yield-corn">Corn</option>
+                                <option value="soybean" id="yield-soybean">Soybean</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="soil-type" id="soil-type-label">Soil Type</label>
+                            <select id="soil-type">
+                                <option value="" id="select-soil">Select Soil Type</option>
+                                <option value="clay" id="clay-soil">Clay</option>
+                                <option value="loam" id="loam-soil">Loam</option>
+                                <option value="sandy" id="sandy-soil">Sandy</option>
+                                <option value="silt" id="silt-soil">Silt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="area-size" id="area-size-label">Area Size (in acres)</label>
+                            <input type="number" id="area-size" placeholder="Enter area size">
+                        </div>
+                        <div class="form-group">
+                            <label for="irrigation" id="irrigation-label">Irrigation Method</label>
+                            <select id="irrigation">
+                                <option value="" id="select-irrigation">Select Method</option>
+                                <option value="drip" id="drip-irrigation">Drip Irrigation</option>
+                                <option value="sprinkler" id="sprinkler-irrigation">Sprinkler</option>
+                                <option value="flood" id="flood-irrigation">Flood Irrigation</option>
+                                <option value="rain" id="rain-irrigation">Rain-fed</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn" id="predict-btn">Predict Yield</button>
+                        <div id="yield-result" style="margin-top: 20px; text-align: center; display: none;">
+                            <h3 id="yield-prediction-title">Yield Prediction</h3>
+                            <p id="estimated-yield">Estimated yield: <strong>4.8 tons/acre</strong></p>
+                            <p id="expected-total">Expected total: <strong>24 tons</strong></p>
+                            <p id="comparison">This is <strong>15% higher</strong> than last year's average in your region.</p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Chatbot Demo -->
+                <div class="demo-content" id="chatbot-content">
+                    <div class="chatbot-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message bot-message" id="bot-greeting">Hello! I'm your Sasyavardhana assistant. How can I help you today?</div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chat-input" placeholder="Type your question...">
+                            <div style="display: flex; gap: 10px; width: 100%;">
+                                <button class="voice-btn" id="voice-btn" aria-label="Voice input">🎤</button>
+                                <button class="btn" id="send-btn" style="flex-grow: 1;">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather & Crops Demo -->
+                <div class="demo-content" id="weather-content">
+                    <div class="weather-container">
+                        <div class="form-group" style="width: 100%;">
+                            <label for="location" id="location-label">Enter Your Location</label>
+                            <input type="text" id="location" placeholder="Enter city or zip code">
+                            <button type="button" class="btn" style="margin-top: 10px; width: 100%;" id="weather-btn">Get Weather & Suggestions</button>
+                        </div>
+                        <div class="weather-display" id="weather-display" style="display: none;">
+                            <div class="weather-icon">☀️</div>
+                            <div class="weather-info">
+                                <div class="temp" id="temperature">32°C</div>
+                                <div class="location" id="location-display">Bangalore, Karnataka</div>
+                                <div id="humidity-wind">Humidity: 65% | Wind: 12 km/h</div>
+                                <div id="forecast">5-day forecast: Mostly sunny with occasional showers</div>
+                            </div>
+                        </div>
+                        <div class="crop-suggestions" id="crop-suggestions" style="display: none;">
+                            <h3 id="crop-suggestions-title">Recommended Crops for Your Region</h3>
+                            <p id="crop-suggestions-description">Based on current weather and soil conditions:</p>
+                            <div class="crop-list">
+                                <span class="crop-badge" id="crop1">Rice</span>
+                                <span class="crop-badge" id="crop2">Millet</span>
+                                <span class="crop-badge" id="crop3">Groundnut</span>
+                                <span class="crop-badge" id="crop4">Sunflower</span>
+                                <span class="crop-badge" id="crop5">Pulses</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soil Sensors Demo -->
+                <div class="demo-content" id="sensors-content">
+                    <div class="sensor-container">
+                        <div class="sensor-card">
+                            <div class="sensor-label" id="temp-label">Soil Temperature</div>
+                            <div class="sensor-value" id="temp-value">24.5°C</div>
+                            <div class="sensor-status optimal" id="temp-status">Optimal</div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-label" id="moisture-label">Soil Moisture</div>
+                            <div class="sensor-value" id="moisture-value">42%</div>
+                            <div class="sensor-status warning" id="moisture-status">Slightly Low</div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-label" id="ph-label">pH Level</div>
+                            <div class="sensor-value" id="ph-value">6.8</div>
+                            <div class="sensor-status optimal" id="ph-status">Optimal</div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-label" id="nutrient-label">Nutrient Index</div>
+                            <div class="sensor-value" id="nutrient-value">72</div>
+                            <div class="sensor-status optimal" id="nutrient-status">Good</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login/Sign Up Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" aria-label="Close modal">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login" id="login-tab">Login</button>
+                <button class="auth-tab" data-tab="signup" id="signup-tab">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email" id="login-email-label">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password" id="login-password-label">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;" id="login-submit">Login</button>
+                <p class="auth-switch" id="login-switch">Don't have an account? <a href="#" data-tab="signup">Sign Up</a></p>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="signup-username" id="signup-username-label">Username</label>
+                    <input type="text" id="signup-username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email" id="signup-email-label">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-contact" id="signup-contact-label">Contact Number</label>
+                    <input type="tel" id="signup-contact" placeholder="Enter your contact number" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password" id="signup-password-label">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password" id="signup-confirm-password-label">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;" id="signup-submit">Sign Up</button>
+                <p class="auth-switch" id="signup-switch">Already have an account? <a href="#" data-tab="login">Login</a></p>
+            </form>
+        </div>
+    </div>
+    <footer id="contact">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3 id="about-title">About Sasyavardhana</h3>
+                <p id="about-description">We're revolutionizing agriculture with AI-powered solutions that help farmers increase yield, reduce costs, and implement sustainable practices.</p>
+            </div>
+            <div class="footer-section">
+                <h3 id="quick-links-title">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#features" id="footer-features">Features</a></li>
+                    <li><a href="#demo" id="footer-demo">Demo</a></li>
+                    <li><a href="#" id="footer-pricing">Pricing</a></li>
+                    <li><a href="#" id="footer-blog">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3 id="contact-title">Contact Us</h3>
+                <ul class="footer-links">
+                    <li id="contact-email">Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afc6c1c9c0efc9ceddc2cec681dbcaccc7"><span class="__cf_email__" data-cfemail="ddaebcaea4bcabbcafb9b5bcb3bc9dbab0bcb4b1f3beb2b0"><span class="__cf_email__" data-cfemail="f28193818b93849380969a939c93b2959f939b9edc919d9f">[email&#160;protected]</span></span></a></li>
+                    <li id="contact-phone">Phone: +91 98765 43210</li>
+                    <li id="contact-address">Address: Sasyavardhana Park, Nashik</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3 id="connect-title">Connect With Us</h3>
+                <p id="connect-description">Follow us on social media for updates and farming tips.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon" aria-label="Facebook">f</a>
+                    <a href="#" class="social-icon" aria-label="Twitter">t</a>
+                    <a href="#" class="social-icon" aria-label="LinkedIn">in</a>
+                    <a href="#" class="social-icon" aria-label="Instagram">ig</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2025 Sasyavardhana. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+    <div class="leaf-animation" id="leafContainer"></div>
+
+    <!-- Translation Container -->
+    <div id="translate-container">
+        <button id="translate-button">🌐 Translate</button>
+        <!-- Scrollable Translate Dropdown -->
+        <div id="translate-dropdown">
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        // Translation functionality
+        document.getElementById("translate-button").addEventListener("click", function() {
+            const dropdown = document.getElementById("translate-dropdown");
+            dropdown.style.display = dropdown.style.display === "none" || dropdown.style.display === "" ? "block" : "none";
+        });
+
+        // Load Google Translate Script Dynamically
+        function loadGoogleTranslateScript() {
+            const script = document.createElement("script");
+            script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+            script.type = "text/javascript";
+            document.body.appendChild(script);
+        }
+
+        // Fix header position after translation
+        function fixHeaderAfterTranslation() {
+            // Create a MutationObserver to watch for changes to the body class
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'class') {
+                        const bodyClasses = document.body.className;
+                        if (bodyClasses.includes('translated-ltr') || bodyClasses.includes('translated-rtl')) {
+                            // Adjust header position when Google Translate is active
+                            document.querySelector('header').style.top = '40px';
+                        } else {
+                            // Reset header position when Google Translate is not active
+                            document.querySelector('header').style.top = '0';
+                        }
+                    }
+                });
+            });
+            
+            // Start observing the body for class changes
+            observer.observe(document.body, { attributes: true });
+        }
+
+        // Initialize Google Translate Element
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: "en", // Default page language
+                    includedLanguages: `
+                    as,bn,gu,hi,kn,ks,ml,mr,ne,or,pa,sd,ta,te,ur,sa,bo,mai,brx,sat,dz,doi,mni,kok,lus,kha,
+                    en
+                    `,
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                },
+                "google_translate_element"
+            );
+        }
+
+        // Falling Leaf Animation
+        function createLeaves() {
+            const leafContainer = document.getElementById('leafContainer');
+            const containerWidth = leafContainer.clientWidth;
+            
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                
+                // Randomize leaf properties
+                const left = Math.random() * containerWidth;
+                const size = Math.random() * 15 + 10;
+                const duration = Math.random() * 10 + 8;
+                const delay = Math.random() * 5;
+                
+                // Set leaf styles
+                leaf.style.left = `${left}px`;
+                leaf.style.width = `${size}px`;
+                leaf.style.height = `${size}px`;
+                leaf.style.animationDuration = `${duration}s`;
+                leaf.style.animationDelay = `${delay}s`;
+                
+                // Add leaf to container
+                leafContainer.appendChild(leaf);
+            }
+        }
+
+        // Mobile Menu Toggle
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+                
+                // Close menu when clicking on a link
+                const navLinks = navMenu.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        navMenu.classList.remove('active');
+                    });
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!navMenu.contains(e.target) && e.target !== menuToggle) {
+                        navMenu.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Show Authentication Modal
+        function showAuthModal() {
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'flex';
+        }
+
+        // Close Modal
+        const closeModalBtn = document.querySelector('.close-modal');
+        closeModalBtn.addEventListener('click', () => {
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'none';
+        });
+
+        // Close Modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const authModal = document.getElementById('auth-modal');
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+            }
+        });
+
+        // Switch between Login and Sign Up Tabs
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        const authSwitchLinks = document.querySelectorAll('.auth-switch a');
+
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+
+                // Update active tab
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show corresponding form
+                authForms.forEach(form => form.classList.remove('active'));
+                document.getElementById(`${target}-form`).classList.add('active');
+            });
+        });
+
+        // Switch between Login and Sign Up using links
+        authSwitchLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.dataset.tab;
+
+                // Update active tab
+                authTabs.forEach(t => t.classList.remove('active'));
+                document.querySelector(`.auth-tab[data-tab="${target}"]`).classList.add('active');
+
+                // Show corresponding form
+                authForms.forEach(form => form.classList.remove('active'));
+                document.getElementById(`${target}-form`).classList.add('active');
+            });
+        });
+
+        // Handle Login Form Submission
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Simulate login (replace with actual API call)
+            console.log('Logging in with:', email, password);
+            alert('Login successful!');
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'none';
+        });
+
+        // Handle Sign Up Form Submission
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const contact = document.getElementById('signup-contact').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Simulate signup (replace with actual API call)
+            console.log('Signing up with:', username, email, contact, password);
+            alert('Signup successful!');
+            const authModal = document.getElementById('auth-modal');
+            authModal.style.display = 'none';
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createLeaves();
+            setupMobileMenu();
+            
+            // Load the Translate Script
+            loadGoogleTranslateScript();
+            
+            // Fix header position after translation
+            fixHeaderAfterTranslation();
+            
+            // Tab Switching Functionality for demo tabs
+            const tabs = document.querySelectorAll('.demo-tab');
+            const contents = document.querySelectorAll('.demo-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tab;
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    contents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${target}-content`).classList.add('active');
+                });
+            });
+            
+            // Disease Detection Demo
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const diseaseResult = document.getElementById('disease-result');
+            
+            analyzeBtn.addEventListener('click', () => {
+                // Simulate loading
+                analyzeBtn.textContent = 'Analyzing...';
+                
+                // Show result after 2 seconds (simulating processing)
+                setTimeout(() => {
+                    diseaseResult.style.display = 'block';
+                    analyzeBtn.textContent = 'Analyze Disease';
+                }, 2000);
+            });
+            
+            // Yield Prediction Demo
+            const predictBtn = document.getElementById('predict-btn');
+            const yieldResult = document.getElementById('yield-result');
+            
+            predictBtn.addEventListener('click', () => {
+                // Simulate loading
+                predictBtn.textContent = 'Processing...';
+                
+                // Show result after 2 seconds
+                setTimeout(() => {
+                    yieldResult.style.display = 'block';
+                    predictBtn.textContent = 'Predict Yield';
+                }, 2000);
+            });
+            
+            // Chatbot Demo
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Sample responses for demo
+            const botResponses = {
+                'hi': 'Hello! How can I assist you with your farming today?',
+                'hello': 'Hi there! What farming information do you need?',
+                'crops': 'Based on your location and current season, I would recommend wheat, barley, and mustard for planting.',
+                'weather': 'The current weather in your area is sunny with a temperature of 28°C. It\'s a good time to irrigate your crops.',
+                'disease': 'If you suspect a disease, please upload a photo of the affected crop for analysis.',
+                'yield': 'To predict your crop yield, please provide details about your crop type, soil type, and irrigation method.',
+                'help': 'I can help you with disease detection, yield prediction, weather updates, and crop recommendations. Just ask!',
+                'default': 'I\'m sorry, I didn\'t understand that. Could you please rephrase or ask another question?'
+            };
+            
+            sendBtn.addEventListener('click', () => {
+                const userMessage = chatInput.value.trim();
+                if (userMessage) {
+                    // Add user message to chat
+                    const userMsgElement = document.createElement('div');
+                    userMsgElement.classList.add('message', 'user-message');
+                    userMsgElement.textContent = userMessage;
+                    chatMessages.appendChild(userMsgElement);
+                    
+                    // Clear input
+                    chatInput.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        const botResponse = botResponses[userMessage.toLowerCase()] || botResponses['default'];
+                        const botMsgElement = document.createElement('div');
+                        botMsgElement.classList.add('message', 'bot-message');
+                        botMsgElement.textContent = botResponse;
+                        chatMessages.appendChild(botMsgElement);
+                        
+                        // Scroll to the bottom of the chat
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1000);
+                }
+            });
+            
+            // Enter key for chat
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendBtn.click();
+                }
+            });
+            
+            // Weather & Crops Demo
+            const weatherBtn = document.getElementById('weather-btn');
+            const weatherDisplay = document.getElementById('weather-display');
+            const cropSuggestions = document.getElementById('crop-suggestions');
+            
+            weatherBtn.addEventListener('click', () => {
+                const location = document.getElementById('location').value.trim();
+                if (location) {
+                    // Simulate loading
+                    weatherBtn.textContent = 'Fetching...';
+                    
+                    // Show result after 2 seconds
+                    setTimeout(() => {
+                        weatherDisplay.style.display = 'flex';
+                        cropSuggestions.style.display = 'block';
+                        weatherBtn.textContent = 'Get Weather & Suggestions';
+                    }, 2000);
+                }
+            });
+            
+            // Handle orientation changes for better mobile experience
+            window.addEventListener('orientationchange', () => {
+                // Small delay to allow the browser to complete the orientation change
+                setTimeout(() => {
+                    // Adjust any elements that need fixing after orientation change
+                    const navMenu = document.getElementById('nav-menu');
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                    }
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grape Disease Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Existing CSS remains the same */
+        :root {
+            --primary: #2ecc71;
+            --secondary: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --accent: #f39c12;
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-login {
+            background-color: var(--secondary);
+            margin-left: 10px;
+        }
+
+        .btn-login:hover {
+            background-color: #229954;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding-top: 80px; /* Adjust padding to avoid content being hidden behind the navbar */
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Recommended Products Styles */
+        #ecommerceInfo {
+            margin-top: 20px;
+        }
+
+        .pesticide-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .pesticide-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: calc(33.333% - 20px);
+            text-align: center;
+        }
+
+        .pesticide-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .pesticide-card h4 {
+            margin: 10px 0;
+        }
+
+        .pesticide-card .price {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .pesticide-card p {
+            margin: 10px 0;
+        }
+
+        .pesticide-card .view-product {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .pesticide-card .view-product:hover {
+            background-color: #229954;
+        }
+
+        /* Translation Dropdown Styles */
+        #translate-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        #translate-button {
+            padding: 10px;
+            background-color: #2d457e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #translate-dropdown {
+            display: none;
+            max-height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            position: absolute;
+            right: 0;
+            bottom: 50px;
+            width: 250px;
+        }
+
+        /* Ensure Google Translate element is scrollable */
+        #google_translate_element {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Existing header and main content remain the same -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-icon">🌱</span> Sasyavardhana
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#demo">Try Demo</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" class="btn btn-login" id="logout-btn" onclick="window.location.href='/'">Log out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="upload-section">
+            <h1>🍇 Grape Disease Detection</h1>
+            <p>Upload or capture an image of a grape leaf to detect diseases.</p>
+            <div class="file-upload">
+                <label for="fileInput" class="upload-label">
+                    <span>📁 Upload Image</span>
+                    <input type="file" id="fileInput" accept="image/*">
+                </label>
+            </div>
+            <div class="camera-section">
+                <button id="captureButton">📷 Open Camera</button>
+                <video id="cameraFeed" autoplay></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <button id="predictButton" disabled>🔍 Predict</button>
+            </div>
+        </div>
+        <div class="result-section">
+            <h2>Prediction Result</h2>
+            <div class="result-box">
+                <p id="resultMessage">No prediction yet.</p>
+                <div id="diseaseInfo"></div>
+                <div id="pesticideImages"></div> <!-- Container for pesticide images -->
+                <div id="pesticideInfo" class="pesticide-info"></div> <!-- Container for pesticide details -->
+                <div id="ecommerceInfo" style="display: none;">
+                    <h3>Recommended Products</h3>
+                    <div class="pesticide-options"></div>
+                    <a href="{{ url_for('shop') }}" id="shopNowButton" class="btn">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Translation Container -->
+    <div id="translate-container">
+        <button id="translate-button">
+            🌐 Translate
+        </button>
+        <div id="translate-dropdown">
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+
+    <!-- Footer remains the same -->
+    <footer id="contact">
+        <!-- ... (existing footer content) ... -->
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>About Sasyavardhana</h3>
+                    <p>We're revolutionizing agriculture with AI-powered solutions that help farmers increase yield, reduce costs, and implement sustainable practices.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afc6c1c9c0efc9ceddc2cec681dbcaccc7"><span class="__cf_email__" data-cfemail="ddaebcaea4bcabbcafb9b5bcb3bc9dbab0bcb4b1f3beb2b0">sasyavardhana@gmail.com</span></a></li>
+                        <li>Phone: +91 98765 43210</li>
+                        <li>Address: Sasyavardhana Park, Nashik</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <p>Follow us on social media for updates and farming tips.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">f</a>
+                        <a href="#" class="social-icon">t</a>
+                        <a href="#" class="social-icon">in</a>
+                        <a href="#" class="social-icon">ig</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Sasyavardhana. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    <script>
+        // Toggle Translate Dropdown
+        document.getElementById("translate-button").addEventListener("click", function () {
+            const dropdown = document.getElementById("translate-dropdown");
+            dropdown.style.display = 
+                dropdown.style.display === "none" || dropdown.style.display === "" 
+                    ? "block" 
+                    : "none";
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById("translate-dropdown");
+            const translateButton = document.getElementById("translate-button");
+            
+            if (!dropdown.contains(event.target) && 
+                !translateButton.contains(event.target) && 
+                dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            }
+        });
+
+        // Load Google Translate Script Dynamically
+        function loadGoogleTranslateScript() {
+            const script = document.createElement("script");
+            script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+            script.type = "text/javascript";
+            document.body.appendChild(script);
+        }
+
+        // Initialize Google Translate Element
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: "en", // Default page language
+                    includedLanguages: `
+                        as,bn,gu,hi,kn,ks,ml,mr,ne,or,pa,sd,ta,te,ur,sa,bo,mai,brx,sat,dz,doi,mni,kok,lus,kha,
+                        en
+                    `,
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                },
+                "google_translate_element"
+            );
+        }
+
+        // Load the Translate Script
+        loadGoogleTranslateScript();
+    </script>
+</body>
+</html>
