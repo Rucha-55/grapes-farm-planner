@@ -1,3 +1,7 @@
+import os
+# Suppress TensorFlow info and warning messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=INFO, 1=WARNING, 2=ERROR, 3=FATAL
+
 from flask import Flask, request, jsonify, render_template, render_template, session, redirect, url_for, flash , send_from_directory
 from flask_cors import CORS
 import requests
