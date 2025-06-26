@@ -1,5 +1,7 @@
 # Suppress TensorFlow and Keras logs
 import os
+from datetime import datetime
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0=INFO, 1=WARNING, 2=ERROR, 3=FATAL
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations that cause logs
 
@@ -8,7 +10,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Now import other libraries
-from flask import Flask, request, jsonify, render_template, session, redirect, url_for, flash, send_from_directory
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for, flash, send_from_directory, make_response
 from flask_cors import CORS
 import requests
 import os
@@ -151,6 +153,30 @@ app.json_encoder = JSONEncoder
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring"""
+    try:
+        # Check if models are loaded
+        if model and modelgrape and weather_model and scaler and encoder:
+            return jsonify({
+                'status': 'healthy',
+                'timestamp': datetime.now().isoformat(),
+                'models_loaded': True
+            }), 200
+        else:
+            return jsonify({
+                'status': 'unhealthy',
+                'message': 'Some models failed to load',
+                'timestamp': datetime.now().isoformat()
+            }), 500
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 # Custom filter for formatting Unix timestamps to time
 @app.template_filter('timestamp_to_time')

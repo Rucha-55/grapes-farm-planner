@@ -3,12 +3,12 @@ services:
     name: grapes-farm-planner
     env: python
     buildCommand: |
-      pip install --upgrade pip && \
-      pip install -r requirements.txt
+      python -m pip install --upgrade pip && \
+      pip install --no-cache-dir -r requirements.txt
     startCommand: gunicorn --config gunicorn_config.py app:app
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.12
+        value: 3.9.18
       - key: PORT
         value: 10000
       - key: TF_CPP_MIN_LOG_LEVEL
@@ -19,6 +19,14 @@ services:
         value: production
       - key: FLASK_APP
         value: app.py
+      - key: PYTHONUNBUFFERED
+        value: 1
+      - key: PYTHONPATH
+        value: /app
     plan: free
     python:
-      version: 3.10.12
+      version: 3.9.18
+    build:
+      useDockerfile: true
+    healthCheckPath: /health
+    autoDeploy: true
