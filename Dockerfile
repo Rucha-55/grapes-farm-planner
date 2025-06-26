@@ -1,9 +1,12 @@
+# ========================================
 # Build stage
+# ========================================
 FROM python:3.9.18-slim as builder
 
-WORKDIR /app
+# Set build arguments
+ARG DEBIAN_FRONTEND=noninteractive
 
-# Install build dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     python3-dev \
@@ -13,22 +16,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Install Python dependencies with specific versions first
+# Install pip and setuptools with specific versions
+RUN pip install --no-cache-dir --upgrade pip==23.1.2 setuptools==65.5.0 wheel==0.40.0
+
+# Copy requirements file
 COPY requirements.txt .
 
-# Install pip and setuptools first with specific versions
-RUN pip install --upgrade pip==23.1.2 setuptools==65.5.0 wheel==0.40.0
+# Install Python dependencies in a specific order to avoid conflicts
+RUN pip install --no-cache-dir numpy==1.23.5 && \
+    pip install --no-cache-dir 'protobuf==3.19.6' --no-deps && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Install numpy first as it's a common dependency with specific version requirements
-RUN pip install --no-cache-dir numpy==1.23.5
-
-# Install protobuf first to avoid conflicts
-RUN pip install --no-cache-dir 'protobuf==3.19.6' --no-deps
-
-# Now install the rest of the requirements
-RUN pip install --no-cache-dir -r requirements.txt
-
+# ========================================
 # Runtime stage
+# ========================================
 FROM python:3.9.18-slim
 
 # Set environment variables
@@ -39,11 +40,11 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100
+    PIP_DEFAULT_TIMEOUT=100 \
+    FLASK_ENV=production \
+    FLASK_APP=app.py
 
-WORKDIR /app
-
-# Install runtime dependencies
+# Install runtime system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -58,15 +59,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+# Set working directory
+WORKDIR /app
+
 # Copy application code
 COPY . .
 
 # Create necessary directories and set permissions
 RUN mkdir -p uploads && \
-    chmod -R 755 .
+    chmod -R 755 /app/uploads
 
 # Expose the port the app runs on
 EXPOSE 10000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:10000/health || exit 1
 
 # Command to run the application
 CMD ["gunicorn", "--config", "gunicorn_config.py", "app:app"]

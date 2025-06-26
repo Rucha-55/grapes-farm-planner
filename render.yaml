@@ -1,32 +1,34 @@
 services:
   - type: web
     name: grapes-farm-planner
-    env: python
-    buildCommand: |
-      python -m pip install --upgrade pip && \
-      pip install --no-cache-dir -r requirements.txt
-    startCommand: gunicorn --config gunicorn_config.py app:app
+    env: docker
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.18
       - key: PORT
         value: 10000
-      - key: TF_CPP_MIN_LOG_LEVEL
-        value: 3
-      - key: TF_ENABLE_ONEDNN_OPTS
-        value: 0
-      - key: FLASK_ENV
-        value: production
-      - key: FLASK_APP
-        value: app.py
       - key: PYTHONUNBUFFERED
         value: 1
       - key: PYTHONPATH
         value: /app
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: app.py
+      - key: TF_CPP_MIN_LOG_LEVEL
+        value: 3
+      - key: TF_ENABLE_ONEDNN_OPTS
+        value: 0
     plan: free
-    python:
-      version: 3.9.18
+    region: oregon  # Choose the region closest to your users
+    healthCheckPath: /health
+    autoDeploy: true
     build:
       useDockerfile: true
+    env: docker
+    dockerCommand: gunicorn --config gunicorn_config.py app:app
+    dockerContext: .
+    dockerBuildTarget: production
+    dockerBuildArgs:
+      - PYTHON_VERSION=3.9.18
     healthCheckPath: /health
     autoDeploy: true
