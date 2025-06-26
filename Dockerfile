@@ -9,43 +9,38 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Create and activate virtual environment
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Install pip and setuptools with specific versions
-RUN pip install --no-cache-dir --upgrade pip==23.1.2 setuptools==65.5.0 wheel==0.40.0
-
-# Copy requirements file
+# Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
 # Install Python dependencies in a specific order to avoid conflicts
-RUN pip install --no-cache-dir numpy==1.23.5 && \
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir setuptools==59.6.0 wheel==0.37.1 && \
+    pip install --no-cache-dir numpy==1.23.5 && \
     pip install --no-cache-dir 'protobuf==3.19.6' --no-deps && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install gdown==4.7.1
+    pip install --no-cache-dir gdown==4.6.6 && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application
+COPY . .
 
 # Download models during build
-RUN mkdir -p /app/models
-RUN python -c "from download_models import download_models; download_models()"
+RUN mkdir -p /app/models && \
+    python -c "from download_models import download_models; download_models()"
 
 # ========================================
 # Runtime stage
 # ========================================
-FROM python:3.9.18-slim
+FROM python:3.9-slim
 
 # Set environment variables
-ENV PYTHONUNBUFFERED=1 \
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
     PORT=10000 \
     TF_CPP_MIN_LOG_LEVEL=3 \
     TF_ENABLE_ONEDNN_OPTS=0 \
-    PYTHONPATH=/app \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
     FLASK_ENV=production \
     FLASK_APP=app.py
 
@@ -60,19 +55,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy virtual environment from builder
-COPY --from=builder /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Set working directory
+# Set work directory
 WORKDIR /app
+
+# Copy from builder
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code
 COPY . .
 
 # Create necessary directories and set permissions
-RUN mkdir -p uploads && \
-    chmod -R 755 /app/uploads
+RUN mkdir -p uploads models && \
+    chmod -R 755 uploads models
 
 # Expose the port the app runs on
 EXPOSE 10000
