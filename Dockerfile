@@ -19,7 +19,6 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir setuptools==59.6.0 wheel==0.37.1 && \
     pip install --no-cache-dir numpy==1.23.5 && \
     pip install --no-cache-dir 'protobuf==3.19.6' --no-deps && \
-    pip install --no-cache-dir gdown==4.6.6 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
