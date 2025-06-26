@@ -14,6 +14,11 @@ lib/
 lib64/
 parts/
 sdist/
+
+# Model files
+models/
+*.h5
+*.pkl
 var/
 wheels/
 *.egg-info/

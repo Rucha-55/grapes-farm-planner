@@ -89,13 +89,31 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 app = Flask(__name__)
 CORS(app)
 
+# Import download_models at the top with other imports
+from download_models import download_models
+
+# Ensure models directory exists and download models if needed
+os.makedirs("models", exist_ok=True)
+download_models()
+
 # Load the models
-model = load_model("grape_model.h5")
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-modelgrape = tf.keras.models.load_model("apple_disease.h5")
-weather_model = load_model('grape_leaf_disease_model.h5')
-scaler = joblib.load('scaler.pkl')  # Ensure this is a StandardScaler object
-encoder = joblib.load('label_encoder.pkl')  # Ensure this is a LabelEncoder object
+model = None
+modelgrape = None
+weather_model = None
+scaler = None
+encoder = None
+
+try:
+    model = load_model("models/grape_model.h5")
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    modelgrape = tf.keras.models.load_model("models/apple_disease.h5")
+    weather_model = load_model('models/grape_leaf_disease_model.h5')
+    scaler = joblib.load('models/scaler.pkl')  # Ensure this is a StandardScaler object
+    encoder = joblib.load('models/label_encoder.pkl')  # Ensure this is a LabelEncoder object
+except Exception as e:
+    print(f"Error loading models: {e}")
+    # You might want to handle this error more gracefully in production
+    raise
 
 # Class labels for grape diseases
 class_names = ['Black Rot', 'Leaf Blight', 'Healthy', 'ESCA']

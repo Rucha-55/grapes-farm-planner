@@ -25,7 +25,12 @@ COPY requirements.txt .
 # Install Python dependencies in a specific order to avoid conflicts
 RUN pip install --no-cache-dir numpy==1.23.5 && \
     pip install --no-cache-dir 'protobuf==3.19.6' --no-deps && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install gdown==4.7.1
+
+# Download models during build
+RUN mkdir -p /app/models
+RUN python -c "from download_models import download_models; download_models()"
 
 # ========================================
 # Runtime stage
