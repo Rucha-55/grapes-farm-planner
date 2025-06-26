@@ -88,7 +88,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Load the models
-model = load_model("grape_model.h5")
+model = load_model("apple_disease.h5")
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 modelgrape = tf.keras.models.load_model("apple_disease.h5")
 weather_model = load_model('grape_leaf_disease_model.h5')
