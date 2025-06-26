@@ -23,7 +23,7 @@ RUN pip install --upgrade pip==23.1.2 setuptools==65.5.0 wheel==0.40.0
 RUN pip install --no-cache-dir numpy==1.23.5
 
 # Install protobuf first to avoid conflicts
-RUN pip install --no-cache-dir 'protobuf==3.20.3' --no-deps
+RUN pip install --no-cache-dir 'protobuf==3.19.6' --no-deps
 
 # Now install the rest of the requirements
 RUN pip install --no-cache-dir -r requirements.txt
