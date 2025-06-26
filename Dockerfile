@@ -6,16 +6,27 @@ WORKDIR /app
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Create and activate virtual environment
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Install Python dependencies
+# Install Python dependencies with specific versions first
 COPY requirements.txt .
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+
+# Install pip and setuptools first with specific versions
+RUN pip install --upgrade pip==23.1.2 setuptools==65.5.0 wheel==0.40.0
+
+# Install numpy first as it's a common dependency with specific version requirements
+RUN pip install --no-cache-dir numpy==1.23.5
+
+# Install protobuf first to avoid conflicts
+RUN pip install --no-cache-dir 'protobuf==3.20.3' --no-deps
+
+# Now install the rest of the requirements
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Runtime stage
 FROM python:3.9.18-slim
@@ -39,6 +50,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libxext6 \
     libxrender1 \
+    libgl1 \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual environment from builder
