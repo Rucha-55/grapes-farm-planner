@@ -30,6 +30,73 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from datetime import datetime
 import os
 import json
+
+# Load models at startup
+print("Loading models...")
+
+# Initialize model variables as None
+modelgrape = None
+modelapple = None
+modelgrapetype = None
+scaler = None
+label_encoder = None
+class_namesgrape = ['Black Rot', 'Leaf Blight', 'Healthy', 'ESCA']
+
+def load_models():
+    """Load all required ML models and resources"""
+    global modelgrape, modelapple, modelgrapetype, scaler, label_encoder
+    
+    try:
+        models_dir = 'models'
+        if not os.path.exists(models_dir):
+            print(f"❌ Models directory '{models_dir}' not found. Please run download_models.py first.")
+            return False
+            
+        # Check for required model files
+        required_files = [
+            'grape_leaf_disease_model.h5',
+            'apple_disease.h5',
+            'grape_model.h5',
+            'scaler.pkl',
+            'label_encoder.pkl'
+        ]
+        
+        missing_files = [f for f in required_files if not os.path.exists(os.path.join(models_dir, f))]
+        if missing_files:
+            print(f"❌ Missing model files: {', '.join(missing_files)}")
+            print("Please run download_models.py to download the required files.")
+            return False
+        
+        print("Loading grape disease model...")
+        modelgrape = load_model(os.path.join(models_dir, 'grape_leaf_disease_model.h5'))
+        modelgrape.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        
+        print("Loading apple disease model...")
+        modelapple = load_model(os.path.join(models_dir, 'apple_disease.h5'))
+        modelapple.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        
+        print("Loading grape type model...")
+        modelgrapetype = load_model(os.path.join(models_dir, 'grape_model.h5'))
+        modelgrapetype.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        
+        print("Loading scaler and label encoder...")
+        scaler = joblib.load(os.path.join(models_dir, 'scaler.pkl'))
+        label_encoder = joblib.load(os.path.join(models_dir, 'label_encoder.pkl'))
+        
+        print("✅ All models loaded successfully!")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error loading models: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+# Try to load models on startup
+models_loaded = load_models()
+if not models_loaded:
+    print("\n⚠️ WARNING: Failed to load one or more models. The application may not work correctly.")
+    print("Please check the error messages above and ensure all model files are properly downloaded.")
 from database import (
     init_db, get_user_by_email1, get_product_by_id,
     get_reviews_by_product, get_orders_by_user, update_product_rating,
@@ -735,7 +802,6 @@ def predict():
             return jsonify(result)
         
         except Exception as e:
-            return jsonify({
                 'error': str(e), 
                 'is_leaf': True
             })
@@ -743,46 +809,75 @@ def predict():
 @app.route('/predictgrape', methods=['POST'])
 def predictgrape():
     """
-    Handle image upload and prediction.
+    Handle image upload and prediction for grape diseases.
     """
+    # Check if models are loaded
+    if modelgrape is None:
+        return jsonify({
+            'error': 'Grape disease model not loaded',
+            'details': 'The grape disease prediction model failed to load. Please check the server logs.'
+        }), 500
+        
+    # Check if file was uploaded
     if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'})
+        return jsonify({'error': 'No file uploaded'}), 400
     
     file = request.files['file']
     if file.filename == '':
-        return jsonify({'error': 'No file selected'})
+        return jsonify({'error': 'No file selected'}), 400
     
-    # Save the uploaded file
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDERG'], filename)
-    file.save(filepath)
-    print(f"File saved  {filepath}") 
-    # Check if the image is of an apple
-    if not is_apple_image(filepath):
-        return jsonify({'error': 'Unsupported image. Please upload an image of an apple.'})
-   
-    # Preprocess the image and make a prediction
-    img_array = preprocess_image(filepath)
-   
-    prediction = modelgrape.predict(img_array)
-    
-    predicted_class = np.argmax(prediction)
-    
-    disease_label = class_namesgrape[predicted_class]
-    
-    # Get confidence scores for all classes
-    confidence_scores = {class_namesgrape[i]: float(prediction[0][i]) for i in range(len(class_namesgrape))}
-    
-    return jsonify({
-        'disease': disease_label, 
-        'image_url': filepath,
-        'confidence': confidence_scores
-    })
-    
-@app.route('/weather1')
-def weather1():
-    return render_template('weather.html')
-
+    try:
+        # Save the uploaded file
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDERG'], filename)
+        
+        # Create upload directory if it doesn't exist
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        
+        file.save(filepath)
+        print(f"File saved to {filepath}")
+        
+        # Check if the image is valid
+        if not is_apple_image(filepath):
+            return jsonify({
+                'error': 'Unsupported image',
+                'details': 'Please upload an image of a grape leaf.'
+            }), 400
+       
+        # Preprocess the image and make a prediction
+        try:
+            img_array = preprocess_image(filepath)
+            prediction = modelgrape.predict(img_array)
+            
+            predicted_class = np.argmax(prediction)
+            disease_label = class_namesgrape[predicted_class]
+            
+            # Get confidence scores for all classes
+            confidence_scores = {
+                class_name: float(confidence) 
+                for class_name, confidence in zip(class_namesgrape, prediction[0])
+            }
+            
+            return jsonify({
+                'status': 'success',
+                'disease': disease_label, 
+                'image_url': f'/uploads/{filename}',
+                'confidence': confidence_scores
+            })
+            
+        except Exception as e:
+            print(f"Error during prediction: {str(e)}")
+            return jsonify({
+                'error': 'Prediction failed',
+                'details': str(e)
+            }), 500
+            
+    except Exception as e:
+        print(f"Error processing request: {str(e)}")
+        return jsonify({
+            'error': 'Failed to process request',
+            'details': str(e)
+        }), 500
 @app.route('/capture', methods=['POST'])
 def capture():
     """

@@ -1,158 +1,113 @@
 import os
 import sys
-import urllib.request
-import urllib.parse
-import http.cookiejar
-import re
-import shutil
+import requests
 from tqdm import tqdm
 
-def get_confirm_token(response):
-    """Get the confirmation token from the cookies"""
-    for key, value in response.getheaders():
-        if key.startswith('Set-Cookie'):
-            if 'download_warning' in value:
-                match = re.search(r'download_warning=([^;]+)', value)
-                if match:
-                    return match.group(1)
-    return None
-
-def download_file(url, output_path):
+def download_file_from_google_drive(file_id, destination):
     """
-    Download a file from Google Drive with progress bar
+    Download a file from Google Drive using its file ID.
+    Handles large file downloads and shows progress.
     """
+    URL = "https://docs.google.com/uc?export=download"
+    session = requests.Session()
+    
+    # Initial request to get the download URL
+    response = session.get(URL, params={'id': file_id}, stream=True)
+    
+    # Get the confirmation token if it exists
+    token = None
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            token = value
+            break
+    
+    # If we got a token, make another request with it
+    if token:
+        params = {'id': file_id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+    
+    # Get the file size for the progress bar
+    total_size = int(response.headers.get('content-length', 0))
+    
+    # Create parent directory if it doesn't exist
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
+    
+    # Download the file in chunks and show progress
+    chunk_size = 32768  # 32KB chunks
+    
     try:
-        # Create a cookie jar to handle cookies
-        cookie_jar = http.cookiejar.CookieJar()
-        opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookie_jar))
-        urllib.request.install_opener(opener)
-        
-        # First request to get the confirmation token
-        response = urllib.request.urlopen(url)
-        token = get_confirm_token(response)
-        
-        if token:
-            # If we got a token, we need to make another request to confirm
-            url = f"{url}&confirm={token}"
-            response = urllib.request.urlopen(url)
-        
-        # Get the total file size
-        total_size = int(response.headers.get('content-length', 0))
-        
-        # Initialize progress bar
-        block_size = 1024 * 8  # 8KB chunks
-        progress_bar = tqdm(
-            total=total_size, 
-            unit='B', 
-            unit_scale=True,
-            desc=f"Downloading {os.path.basename(output_path)}"
-        )
-        
-        # Download the file in chunks and update progress
-        with open(output_path, 'wb') as f:
-            while True:
-                chunk = response.read(block_size)
-                if not chunk:
-                    break
-                f.write(chunk)
-                progress_bar.update(len(chunk))
-        
-        progress_bar.close()
+        with open(destination, 'wb') as f:
+            with tqdm(
+                total=total_size,
+                unit='B',
+                unit_scale=True,
+                unit_divisor=1024,
+                desc=f"Downloading {os.path.basename(destination)}",
+            ) as pbar:
+                for chunk in response.iter_content(chunk_size):
+                    if chunk:  # filter out keep-alive new chunks
+                        f.write(chunk)
+                        pbar.update(len(chunk))
         
         # Verify the file was downloaded correctly
-        file_size = os.path.getsize(output_path)
-        if file_size > 1024:  # Check if file is larger than 1KB (to avoid HTML error pages)
-            print(f"Successfully downloaded {output_path} ({file_size/1024/1024:.2f} MB)")
+        if os.path.getsize(destination) > 1024:  # At least 1KB
+            file_size_mb = os.path.getsize(destination) / (1024 * 1024)
+            print(f"✅ Successfully downloaded {os.path.basename(destination)} ({file_size_mb:.2f} MB)")
             return True
         else:
-            print(f"Downloaded file is too small (likely an error page): {output_path} ({file_size} bytes)")
-            # Try to read the file to see if it's an HTML error page
-            try:
-                with open(output_path, 'r', encoding='utf-8') as f:
-                    content = f.read(500)
-                    if '<!DOCTYPE html>' in content or '<html' in content:
-                        print("Error: Got an HTML error page instead of the model file")
-                        print("This usually means the file is not publicly accessible or requires authentication")
-            except:
-                pass
-            
-            if os.path.exists(output_path):
-                os.remove(output_path)
+            print(f"❌ Downloaded file is too small: {os.path.basename(destination)}")
+            if os.path.exists(destination):
+                os.remove(destination)
             return False
-                
+            
     except Exception as e:
-        print(f"Error downloading {url}: {str(e)}")
-        if os.path.exists(output_path):
-            os.remove(output_path)
+        print(f"❌ Error downloading {os.path.basename(destination)}: {str(e)}")
+        if os.path.exists(destination):
+            os.remove(destination)
         return False
 
 def download_models():
     """
-    Download model files from Google Drive if they don't exist locally.
+    Download all required model files from Google Drive.
     """
     # Create models directory if it doesn't exist
     os.makedirs("models", exist_ok=True)
     
     # Dictionary of model files and their Google Drive file IDs
     model_files = {
-        "models/grape_model.h5": "1xFJROCP69sNcH0E4TdD38OvSdIJUalGC",
-        "models/apple_disease.h5": "1HjIVeMdsnW40n3IMLUp1r68PmmVsrSFX",
-        "models/grape_leaf_disease_model.h5": "1dzGkGnDyC7yXKER1Q2X8z0ycDMWY1SQ3",
-        "models/scaler.pkl": "1cFdAGQAkYUjtLRpsRO8pyEfmZ9IPV9eY",
-        "models/label_encoder.pkl": "14C9YCEts3Lza3iGHSnhrApN29JsqIJQU"
+        "grape_model.h5": "1xFJROCP69sNcH0E4TdD38OvSdIJUalGC",
+        "apple_disease.h5": "1HjIVeMdsnW40n3IMLUp1r68PmmVsrSFX",
+        "grape_leaf_disease_model.h5": "1dzGkGnDyC7yXKER1Q2X8z0ycDMWY1SQ3",
+        "scaler.pkl": "1cFdAGQAkYUjtLRpsRO8pyEfmZ9IPV9eY",
+        "label_encoder.pkl": "14C9YCEts3Lza3iGHSnhrApN29JsqIJQU"
     }
     
-    # Expected minimum file sizes in bytes (to detect failed downloads)
-    min_file_sizes = {
-        "models/grape_model.h5": 100 * 1024 * 1024,  # ~100MB
-        "models/apple_disease.h5": 100 * 1024 * 1024,  # ~100MB
-        "models/grape_leaf_disease_model.h5": 100 * 1024 * 1024,  # ~100MB
-        "models/scaler.pkl": 1 * 1024,  # ~1KB
-        "models/label_encoder.pkl": 1 * 1024  # ~1KB
-    }
+    print("🔍 Checking for model files...")
+    all_success = True
     
-    print("Checking for model files...")
-    all_downloads_successful = True
-    
-    for file_path, file_id in model_files.items():
-        # Skip if file exists and has sufficient size
-        if os.path.exists(file_path):
-            file_size = os.path.getsize(file_path)
-            min_size = min_file_sizes.get(file_path, 1024)  # Default to 1KB if not specified
-            if file_size >= min_size:
-                print(f"{file_path} already exists and is valid ({file_size/1024/1024:.2f} MB), skipping download")
-                continue
-            else:
-                print(f"Existing file {file_path} is too small ({file_size} bytes), re-downloading...")
-                os.remove(file_path)
+    for filename, file_id in model_files.items():
+        file_path = os.path.join("models", filename)
         
-        # Construct the download URL
-        url = f"https://drive.google.com/uc?export=download&id={file_id}"
-        print(f"\nDownloading {os.path.basename(file_path)} from Google Drive...")
-        
-        # Try to download the file
-        success = download_file(url, file_path)
-        
-        if not success:
-            print(f"Warning: Failed to download {file_path}")
-            all_downloads_successful = False
+        # Skip if file exists and has content
+        if os.path.exists(file_path) and os.path.getsize(file_path) > 1024:  # At least 1KB
+            file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+            print(f"✅ {filename} already exists ({file_size_mb:.2f} MB)")
             continue
             
-        # Verify the downloaded file size
-        if os.path.exists(file_path):
-            file_size = os.path.getsize(file_path)
-            min_size = min_file_sizes.get(file_path, 1024)
-            if file_size < min_size:
-                print(f"Warning: Downloaded file {file_path} is too small ({file_size} bytes), may be corrupted")
-                os.remove(file_path)
-                all_downloads_successful = False
-    
-    if all_downloads_successful:
-        print("\n✅ All model files have been downloaded successfully!")
+        print(f"\n⬇️  Downloading {filename}...")
+        
+        if not download_file_from_google_drive(file_id, file_path):
+            print(f"❌ Failed to download {filename}")
+            all_success = False
+            continue
+            
+    if all_success:
+        print("\n🎉 All model files have been downloaded successfully!")
     else:
-        print("\n⚠️ Some files failed to download. Please check the error messages above.")
+        print("\n❌ Some files failed to download. Please check the error messages above.")
     
-    return all_downloads_successful
+    return all_success
 
 if __name__ == "__main__":
-    download_models()
+    success = download_models()
+    sys.exit(0 if success else 1)
