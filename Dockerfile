@@ -69,14 +69,11 @@ RUN mkdir -p /app/uploads /app/models && \
     chown -R appuser:appuser /app/uploads /app/models && \
     chmod 755 /app/uploads /app/models
 
-# Download models during build (as root to ensure permissions)
+# Switch to root for installation
 USER root
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies needed for download_models
-RUN pip install --no-cache-dir requests tqdm
+# Install gdown for Google Drive downloads
+RUN pip install --no-cache-dir gdown
 
 # Set working directory
 WORKDIR /app
@@ -87,11 +84,21 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Create models directory with correct permissions
+RUN mkdir -p /app/models && \
+    chown -R appuser:appuser /app/models && \
+    chmod 755 /app/models
+
+# Download model files using gdown
+RUN gdown --id 1xFJROCP69sNcH0E4TdD38OvSdIJUalGC -O /app/models/grape_model.h5 && \
+    gdown --id 1HjIVeMdsnW40n3IMLUp1r68PmmVsrSFX -O /app/models/apple_disease.h5 && \
+    gdown --id 1dzGkGnDyC7yXKER1Q2X8z0ycDMWY1SQ3 -O /app/models/grape_leaf_disease_model.h5 && \
+    gdown --id 1cFdAGQAkYUjtLRpsRO8pyEfmZ9IPV9eY -O /app/models/scaler.pkl && \
+    gdown --id 14C9YCEts3Lza3iGHSnhrApN29JsqIJQU -O /app/models/label_encoder.pkl && \
+    chown -R appuser:appuser /app/models
+
 # Copy the rest of the application
 COPY . .
-
-# Run the download script with the current directory in Python path
-RUN python -c "import os; print('Current directory:', os.getcwd()); print('Files in current directory:', os.listdir('.')); from download_models import download_models; download_models()"
 
 # Verify models were downloaded
 RUN echo "Verifying model files..." && \

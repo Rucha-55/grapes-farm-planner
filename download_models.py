@@ -2,29 +2,34 @@ import os
 import sys
 import requests
 from tqdm import tqdm
+import re
 
 def download_file_from_google_drive(file_id, destination):
     """
     Download a file from Google Drive using its file ID.
     Handles large file downloads and shows progress.
     """
-    URL = "https://docs.google.com/uc?export=download"
+    URL = "https://drive.google.com/uc?export=download"
     session = requests.Session()
     
-    # Initial request to get the download URL
+    # First request to get the download page
     response = session.get(URL, params={'id': file_id}, stream=True)
     
-    # Get the confirmation token if it exists
-    token = None
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            token = value
-            break
-    
-    # If we got a token, make another request with it
-    if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
+    # Check if we got an HTML page (Google's warning page)
+    content = response.text
+    if '<!DOCTYPE html>' in content or '<html' in content.lower():
+        # Extract the download confirmation token
+        match = re.search(r'confirm=([0-9A-Za-z_]+)', content)
+        if match:
+            token = match.group(1)
+            # Make a new request with the confirmation token
+            response = session.get(URL, params={'id': file_id, 'confirm': token}, stream=True)
+        else:
+            # If no token found, try to get the direct download link
+            match = re.search(r'href=\"(/uc\\?export=download[^\"]+)', content)
+            if match:
+                download_url = 'https://drive.google.com' + match.group(1).replace('&amp;', '&')
+                response = session.get(download_url, stream=True)
     
     # Get the file size for the progress bar
     total_size = int(response.headers.get('content-length', 0))
@@ -49,16 +54,14 @@ def download_file_from_google_drive(file_id, destination):
                         f.write(chunk)
                         pbar.update(len(chunk))
         
-        # Verify the file was downloaded correctly
-        if os.path.getsize(destination) > 1024:  # At least 1KB
-            file_size_mb = os.path.getsize(destination) / (1024 * 1024)
-            print(f"✅ Successfully downloaded {os.path.basename(destination)} ({file_size_mb:.2f} MB)")
-            return True
-        else:
-            print(f"❌ Downloaded file is too small: {os.path.basename(destination)}")
-            if os.path.exists(destination):
+        # Verify the downloaded file is not an HTML error page
+        if os.path.getsize(destination) < 1024:  # If file is too small, it's likely an error page
+            with open(destination, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read(1024)
+            if '<!DOCTYPE html>' in content or '<html' in content.lower() or 'Google Drive - Quota exceeded' in content:
                 os.remove(destination)
-            return False
+                return False
+        return True
             
     except Exception as e:
         print(f"❌ Error downloading {os.path.basename(destination)}: {str(e)}")
