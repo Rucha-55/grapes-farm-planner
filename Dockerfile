@@ -64,9 +64,10 @@ RUN useradd -m appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
-# Create necessary directories and set permissions
-RUN mkdir -p uploads models && \
-    chmod -R 755 uploads models
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/uploads /app/models && \
+    chown -R appuser:appuser /app/uploads /app/models && \
+    chmod 755 /app/uploads /app/models
 
 # Download models during build (as root to ensure permissions)
 USER root
