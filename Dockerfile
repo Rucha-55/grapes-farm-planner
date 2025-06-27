@@ -77,13 +77,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies needed for download_models
 RUN pip install --no-cache-dir requests tqdm
 
-# Run the download script
-RUN python -c "from download_models import download_models; download_models()"
+# Set working directory and install requirements
+WORKDIR /app
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code (including download_models.py)
+COPY . .
+
+# Run the download script with the current directory in Python path
+RUN python -c "import os; print('Current directory:', os.getcwd()); print('Files in current directory:', os.listdir('.')); from download_models import download_models; download_models()"
 
 # Verify models were downloaded
 RUN echo "Verifying model files..." && \
     if [ ! -f "/app/models/grape_model.h5" ] || [ ! -f "/app/models/apple_disease.h5" ] || [ ! -f "/app/models/grape_leaf_disease_model.h5" ]; then \
         echo "Error: One or more model files are missing!" >&2; \
+        ls -la /app/models/ || echo "Models directory not found"; \
         exit 1; \
     fi && \
     echo "All model files are present"
