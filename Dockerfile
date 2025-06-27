@@ -72,8 +72,11 @@ RUN mkdir -p /app/uploads /app/models && \
 # Switch to root for installation
 USER root
 
-# Install gdown for Google Drive downloads
-RUN pip install --no-cache-dir gdown
+# Install wget and curl for downloading files
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -89,12 +92,13 @@ RUN mkdir -p /app/models && \
     chown -R appuser:appuser /app/models && \
     chmod 755 /app/models
 
-# Download model files using gdown
-RUN gdown --id 1xFJROCP69sNcH0E4TdD38OvSdIJUalGC -O /app/models/grape_model.h5 && \
-    gdown --id 1HjIVeMdsnW40n3IMLUp1r68PmmVsrSFX -O /app/models/apple_disease.h5 && \
-    gdown --id 1dzGkGnDyC7yXKER1Q2X8z0ycDMWY1SQ3 -O /app/models/grape_leaf_disease_model.h5 && \
-    gdown --id 1cFdAGQAkYUjtLRpsRO8pyEfmZ9IPV9eY -O /app/models/scaler.pkl && \
-    gdown --id 14C9YCEts3Lza3iGHSnhrApN29JsqIJQU -O /app/models/label_encoder.pkl && \
+# Download model files using direct links with wget
+RUN cd /app/models && \
+    wget -q --show-progress --progress=bar:force:noscrape -O grape_model.h5 "https://drive.google.com/uc?export=download&id=1xFJROCP69sNcH0E4TdD38OvSdIJUalGC" && \
+    wget -q --show-progress --progress=bar:force:noscrape -O apple_disease.h5 "https://drive.google.com/uc?export=download&id=1HjIVeMdsnW40n3IMLUp1r68PmmVsrSFX" && \
+    wget -q --show-progress --progress=bar:force:noscrape -O grape_leaf_disease_model.h5 "https://drive.google.com/uc?export=download&id=1dzGkGnDyC7yXKER1Q2X8z0ycDMWY1SQ3" && \
+    wget -q --show-progress --progress=bar:force:noscrape -O scaler.pkl "https://drive.google.com/uc?export=download&id=1cFdAGQAkYUjtLRpsRO8pyEfmZ9IPV9eY" && \
+    wget -q --show-progress --progress=bar:force:noscrape -O label_encoder.pkl "https://drive.google.com/uc?export=download&id=14C9YCEts3Lza3iGHSnhrApN29JsqIJQU" && \
     chown -R appuser:appuser /app/models
 
 # Copy the rest of the application
