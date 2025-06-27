@@ -67,7 +67,10 @@ USER appuser
 # Create necessary directories with proper permissions
 RUN mkdir -p /app/uploads /app/models && \
     chown -R appuser:appuser /app/uploads /app/models && \
-    chmod 755 /app/uploads /app/models
+    chmod 755 /app/uploads /app/models && \
+    # Make sure the uploads directory is writable by the appuser
+    chown -R appuser:appuser /app/uploads && \
+    chmod -R 755 /app/uploads
 
 # Switch to root for installation
 USER root

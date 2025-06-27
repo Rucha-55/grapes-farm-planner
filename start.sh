@@ -3,11 +3,10 @@
 # Exit on any error
 set -e
 
-# Create uploads directory if it doesn't exist
-mkdir -p uploads
-
-# Set permissions
-chmod -R 755 uploads
+# Ensure uploads directory exists (should be created in Dockerfile)
+if [ ! -d "uploads" ]; then
+    mkdir -p uploads
+fi
 
 # Set environment variables
 export PYTHONPATH=/app
