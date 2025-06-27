@@ -802,6 +802,7 @@ def predict():
             return jsonify(result)
         
         except Exception as e:
+            return jsonify({
                 'error': str(e), 
                 'is_leaf': True
             })
