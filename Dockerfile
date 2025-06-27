@@ -77,11 +77,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies needed for download_models
 RUN pip install --no-cache-dir requests tqdm
 
-# Set working directory and install requirements
+# Set working directory
 WORKDIR /app
+
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code (including download_models.py)
+# Copy the rest of the application
 COPY . .
 
 # Run the download script with the current directory in Python path
