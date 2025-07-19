@@ -5,12 +5,14 @@ services:
   - type: web
     name: grapes-farm-planner
     env: python
-    python:
-      version: 3.10.13
+    runtime: python3.10  # Force Python 3.10
+    buildCommand: |
+      python -m pip install --upgrade pip==21.3.1
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app --timeout 120 --workers=2 --threads=4 --worker-class=gthread --bind :$PORT
     
     # Environment variables
     envVars:
-      # Application Settings
       - key: FLASK_APP
         value: app.py
       - key: FLASK_ENV
@@ -23,36 +25,24 @@ services:
         value: 1
       - key: PYTHONPATH
         value: /opt/render/project/src
-        
-      # TensorFlow Settings
       - key: TF_CPP_MIN_LOG_LEVEL
         value: "3"
       - key: TF_ENABLE_ONEDNN_OPTS
         value: "0"
-        
-      # File Upload Settings
       - key: UPLOAD_FOLDER
         value: /opt/render/project/src/uploads
       - key: MAX_CONTENT_LENGTH
         value: "16777216"  # 16MB
     
-    # Build and deployment settings
-    buildCommand: |
-      python -m pip install --upgrade pip
-      pip install -r requirements.txt
-    startCommand: gunicorn app:app --timeout 120 --workers=2 --threads=4 --worker-class=gthread --bind :$PORT
-    
-    # Resource allocation (adjust based on your needs)
-    plan: free  # Can be upgraded to 'standard' for production
-    region: oregon  # Choose the region closest to your users
+    # Resource allocation
+    plan: free
+    region: oregon
     
     # Health check
     healthCheckPath: /health
-    
-    # Auto-deploy from Git
     autoDeploy: true
     
-    # Environment variables that should be set in the Render dashboard
+    # Required environment variables
     envVarsFrom:
       - envVar: MONGO_URI
         description: "MongoDB connection string"

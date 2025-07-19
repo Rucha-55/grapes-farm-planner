@@ -1,35 +1,35 @@
 # Core
-Flask==2.3.3
-Werkzeug==2.3.7
-python-dotenv==1.0.0
+Flask==2.0.3
+Werkzeug==2.0.3
+python-dotenv==0.19.2
 
 # Database
-pymongo==4.3.3  # Slightly older version for better compatibility
-dnspython==2.3.0  # Pinned for compatibility
+pymongo==4.0.1
+dnspython==2.1.0
 
 # Machine Learning
-tensorflow-cpu==2.10.1  # Using CPU-only version for better compatibility
-protobuf==3.20.3  # Specific version known to work with TensorFlow 2.10
-opencv-python-headless==4.6.0.66  # Slightly older version for better compatibility
-numpy==1.23.5  # Specific version for TensorFlow 2.10
-Pillow==9.5.0  # Slightly older version for better compatibility
-scikit-learn==1.1.3  # Version known to work well with TensorFlow 2.10
-h5py==3.7.0  # Version compatible with TensorFlow 2.10
+tensorflow-cpu==2.8.0
+protobuf==3.20.1
+opencv-python-headless==4.5.5.64
+numpy==1.22.4
+Pillow==9.1.1
+scikit-learn==1.1.1
+h5py==3.6.0
 
 # Web
-Flask-CORS==3.0.10  # Slightly older version for better compatibility
-python-multipart==0.0.6
-gunicorn==20.1.0  # Slightly older version for better compatibility
-gevent==21.12.0  # Version known to work well with gunicorn
-greenlet==1.1.3  # Version compatible with gevent
+Flask-CORS==3.0.10
+python-multipart==0.0.5
+gunicorn==20.1.0
+gevent==21.12.0
+greenlet==1.1.2
 
 # Utilities
-requests==2.28.2  # Version known for good stability
-tqdm==4.64.1  # Slightly older version for better compatibility
+requests==2.27.1
+tqdm==4.64.0
 python-dateutil==2.8.2
-python-pptx==0.6.21  # Slightly older version for better compatibility
-reportlab==3.6.13  # Version known to work well
-joblib==1.1.1  # Version known to work well with scikit-learn
+python-pptx==0.6.21
+reportlab==3.6.9
+joblib==1.1.0
 
 google-generativeai==0.3.2
-setuptools==65.5.0
+setuptools==62.1.0
