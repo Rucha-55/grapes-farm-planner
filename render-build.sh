@@ -36,14 +36,25 @@ fi
 echo "⬆️ Upgrading pip and setuptools..."
 pip install --upgrade pip setuptools wheel
 
-# Install specific versions of key dependencies first
-echo "📦 Installing core dependencies..."
-pip install numpy==1.26.4
+# Set environment variables for TensorFlow
 export TF_CPP_MIN_LOG_LEVEL=3
 export TF_ENABLE_ONEDNN_OPTS=0
 
-# Install requirements
+# Install specific versions of key dependencies first
+echo "📦 Installing core dependencies..."
+pip install --upgrade pip setuptools wheel
+pip install numpy==1.26.4
+
+# Install TensorFlow CPU first as it has specific requirements
+echo "🤖 Installing TensorFlow CPU..."
+pip install tensorflow-cpu==2.15.0
+
+# Install other requirements
 echo "📋 Installing Python dependencies..."
+pip install -r requirements.txt --no-deps
+
+# Install any missing dependencies
+echo "🔍 Verifying all dependencies..."
 pip install -r requirements.txt
 
 # Create necessary directories
