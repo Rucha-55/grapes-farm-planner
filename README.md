@@ -23,6 +23,7 @@ A machine learning-based web application for detecting diseases in grape and app
 - MongoDB Atlas account (for production database)
 - OpenWeatherMap API key (for weather data)
 - Google Gemini API key (for AI recommendations)
+- Render account (for deployment)
 
 ## Tech Stack
 
@@ -88,33 +89,60 @@ A machine learning-based web application for detecting diseases in grape and app
 - GitHub account
 - Render.com account
 - MongoDB Atlas cluster
+- OpenWeatherMap API key
+- Google Gemini API key
 
 ### Deploying to Render
 
 1. **Fork this repository** to your GitHub account
 
-2. **Create a new Web Service** on Render
-   - Connect your GitHub account
-   - Select the forked repository
-   - Configure the following settings:
+2. **Create a new Web Service** on Render:
+   - Click the "New +" button and select "Web Service"
+   - Connect your GitHub account and select the forked repository
+   - Configure the deployment:
      - **Name**: grapes-farm-planner (or your preferred name)
-     - **Region**: Choose the closest region to your users
-     - **Branch**: main
-     - **Build Command**: `pip install -r requirements.txt`
+     - **Region**: Choose the region closest to your users
+     - **Branch**: main (or your preferred branch)
+     - **Build Command**: `./render-build.sh`
      - **Start Command**: `gunicorn --config gunicorn_config.py app:app`
+     - **Plan**: Start with Free, upgrade as needed
 
-3. **Set up environment variables**
-   - Add all variables from `.env.example` to your Render environment
-   - Set `FLASK_ENV=production`
-   - Add your MongoDB Atlas connection string to `MONGO_URI`
-   - Add your API keys
+3. **Set up environment variables** in the Render dashboard:
+   - `FLASK_APP`: `app.py`
+   - `FLASK_ENV`: `production`
+   - `SECRET_KEY`: Generate a secure random string
+   - `MONGO_URI`: Your MongoDB Atlas connection string
+   - `WEATHER_API_KEY`: Your OpenWeatherMap API key
+   - `GEMINI_API_KEY`: Your Google Gemini API key
+   - `TF_CPP_MIN_LOG_LEVEL`: `3` (to reduce TensorFlow logs)
+   - `TF_ENABLE_ONEDNN_OPTS`: `0`
+   - `UPLOAD_FOLDER`: `/app/uploads`
+   - `MAX_CONTENT_LENGTH`: `16777216` (16MB)
 
-4. **Deploy**
-   - Click "Create Web Service"
-   - Render will automatically build and deploy your application
+4. **Deploy** the application
+   - Click "Create Web Service" to start the deployment
+   - The build process might take several minutes as it installs all dependencies
 
 5. **Access your application**
-   - Once deployed, you'll receive a URL like `https://your-app-name.onrender.com`
+   - Once deployed, your app will be available at `https://<your-app-name>.onrender.com`
+
+### File Storage Note
+
+By default, uploaded files are stored in the container's filesystem, which is ephemeral. For production use:
+
+1. **Option 1**: Use Render's disk storage (persistent but limited to free tier)
+   - Uncomment the `volumes` section in `render.yaml`
+   - Allocate appropriate storage size
+
+2. **Option 2**: Use a cloud storage service (recommended for production)
+   - Configure AWS S3, Google Cloud Storage, or similar
+   - Update the file upload logic to use the cloud storage
+
+### Monitoring and Maintenance
+
+- Check the logs in the Render dashboard for any issues
+- Set up monitoring and alerts in the Render dashboard
+- Consider upgrading to a paid plan for production use
 
 ### Using Docker (Optional)
 

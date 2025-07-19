@@ -1,6 +1,7 @@
 # Git
 .git
 .gitignore
+.gitattributes
 
 # Python
 __pycache__/
@@ -23,10 +24,44 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Virtual Environment
 venv/
 ENV/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local development
+.env.local
+.env.*.local
+instance/
+.webassets-cache
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Media and uploads
+/uploads/*
+!/uploads/.gitkeep
+
+# ML models (they'll be downloaded during build)
+/models/*
+!/models/.gitkeep
+
+# System Files
+.DS_Store
+Thumbs.db
 
 # IDE
 .idea/

@@ -19,9 +19,6 @@ h5py>=3.9.0
 # Web
 Flask-CORS==4.0.0
 python-multipart==0.0.6
-gunicorn==21.2.0
-gevent==22.10.2
-greenlet==2.0.2
 
 # Utilities
 requests>=2.25.1
@@ -29,7 +26,7 @@ tqdm>=4.56.0
 python-dateutil==2.8.2
 python-pptx==0.6.23
 reportlab==4.0.4
-joblib==1.2.0  # Pinned for compatibility
+joblib==1.2.0
 
-google-generativeai==0.3.2  # May need additional dependencies
-setuptools==65.5.0  # Pinned for compatibility
+google-generativeai==0.3.2
+setuptools==65.5.0
