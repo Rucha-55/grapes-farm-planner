@@ -15,8 +15,13 @@ services:
       touch models/grape_model.h5
       touch models/apple_disease.h5
       touch models/grape_leaf_disease_model.h5
-    startCommand: |
-      python -m gunicorn.app.wsgiapp --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app
+      
+      # Create a simple start script
+      echo '#!/bin/bash' > start_app.sh
+      echo 'python -m gunicorn.app.wsgiapp --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app' >> start_app.sh
+      chmod +x start_app.sh
+    
+    startCommand: ./start_app.sh
     
     # Environment variables
     envVars:

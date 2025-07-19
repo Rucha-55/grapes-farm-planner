@@ -3,6 +3,9 @@
 # Exit on any error
 set -e
 
+# Print environment for debugging
+env
+
 # Ensure uploads and models directories exist
 mkdir -p uploads
 mkdir -p models
@@ -21,5 +24,21 @@ done
 # Ensure proper permissions
 chmod -R 755 uploads models
 
-# Start Gunicorn using the Python module syntax
-exec python -m gunicorn.app.wsgiapp --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app
+# Find Python and Gunicorn paths
+PYTHON_PATH=$(which python3 || which python)
+GUNICORN_PATH=$(which gunicorn || echo "gunicorn not found")
+
+echo "Using Python: $PYTHON_PATH"
+echo "Using Gunicorn: $GUNICORN_PATH"
+
+# Try different ways to start Gunicorn
+echo "Starting Gunicorn..."
+
+exec $PYTHON_PATH -m gunicorn.app.wsgiapp \
+  --bind :$PORT \
+  --workers 2 \
+  --threads 4 \
+  --worker-class gthread \
+  --timeout 120 \
+  --log-level=debug \
+  app:app
