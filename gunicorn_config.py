@@ -32,7 +32,13 @@ limit_request_field_size = 8190
 # Performance
 max_requests = 1000
 max_requests_jitter = 200
-worker_tmp_dir = '/dev/shm'  # Use shared memory for worker temp files
+
+# Use /tmp as worker temp directory if /dev/shm is not available
+try:
+    if os.path.exists('/dev/shm'):
+        worker_tmp_dir = '/dev/shm'
+except:
+    pass  # Use default temp directory if /dev/shm is not accessible
 
 # Debugging
 reload = os.environ.get('FLASK_ENV') == 'development'
