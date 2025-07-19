@@ -4,8 +4,9 @@
 services:
   - type: web
     name: grapes-farm-planner
-    env: docker
-    dockerfilePath: ./Dockerfile
+    env: python
+    python:
+      version: 3.10.13
     
     # Environment variables
     envVars:
@@ -21,7 +22,7 @@ services:
       - key: PYTHONUNBUFFERED
         value: 1
       - key: PYTHONPATH
-        value: /app
+        value: /opt/render/project/src
         
       # TensorFlow Settings
       - key: TF_CPP_MIN_LOG_LEVEL
@@ -31,24 +32,15 @@ services:
         
       # File Upload Settings
       - key: UPLOAD_FOLDER
-        value: /app/uploads
+        value: /opt/render/project/src/uploads
       - key: MAX_CONTENT_LENGTH
         value: "16777216"  # 16MB
-        
-      # Database Configuration (to be set in Render dashboard)
-      - key: MONGO_URI
-        sync: false  # Will be set in dashboard
-        
-      # API Keys (to be set in Render dashboard)
-      - key: WEATHER_API_KEY
-        sync: false  # Will be set in dashboard
-      - key: GEMINI_API_KEY
-        sync: false  # Will be set in dashboard
     
     # Build and deployment settings
-    buildCommand: chmod +x render-build.sh && ./render-build.sh
-    startCommand: gunicorn --worker-tmp-dir /dev/shm --workers=2 --threads=4 --worker-class=gthread --timeout 120 --bind :$PORT app:app
-    env: python3
+    buildCommand: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app --timeout 120 --workers=2 --threads=4 --worker-class=gthread --bind :$PORT
     
     # Resource allocation (adjust based on your needs)
     plan: free  # Can be upgraded to 'standard' for production
@@ -60,30 +52,14 @@ services:
     # Auto-deploy from Git
     autoDeploy: true
     
-    # Build settings
-    build:
-      useDockerfile: true
-      dockerfilePath: Dockerfile
-      dockerBuildTarget: production
-      
     # Environment variables that should be set in the Render dashboard
-    # These are just placeholders - actual values should be set in the dashboard
     envVarsFrom:
       - envVar: MONGO_URI
         description: "MongoDB connection string"
         required: true
-      - envVar: SECRET_KEY
-        description: "Flask secret key"
-        generateOnDeploy: true
       - envVar: WEATHER_API_KEY
         description: "OpenWeatherMap API key"
         required: true
       - envVar: GEMINI_API_KEY
         description: "Google Gemini API key"
         required: true
-    
-    # Persistent storage for uploads (if needed)
-    # volumes:
-    #   - name: uploads
-    #     mountPath: /app/uploads
-    #     sizeGB: 1  # Adjust size as needed
