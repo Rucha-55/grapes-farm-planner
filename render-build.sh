@@ -29,9 +29,15 @@ pip install numpy==1.24.3
 echo "🤖 Installing TensorFlow..."
 pip install tensorflow==2.10.1
 
-# Install gunicorn and other requirements
+# Install core dependencies first
+echo "📦 Installing core dependencies..."
+pip install --upgrade pip setuptools wheel
+
+# Install gunicorn and gevent first
+pip install gunicorn==20.1.0 gevent==21.12.0
+
+# Install other requirements
 echo "📋 Installing Python dependencies..."
-pip install gunicorn gevent
 pip install -r requirements.txt
 
 # Create necessary directories

@@ -1,37 +1,3 @@
-# ========================================
-# Builder stage
-# ========================================
-FROM python:3.10-slim as builder
-
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    DEBIAN_FRONTEND=noninteractive
-
-# Set work directory
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --upgrade pip==21.3.1 && \
-    pip install --no-cache-dir setuptools==59.6.0 wheel==0.37.1 && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application
-COPY . .
-
-# ========================================
-# Runtime stage
-# ========================================
 FROM python:3.10-slim
 
 # Set environment variables
@@ -39,79 +5,36 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
     PORT=10000 \
+    PATH="/home/appuser/.local/bin:$PATH" \
     TF_CPP_MIN_LOG_LEVEL=3 \
     TF_ENABLE_ONEDNN_OPTS=0 \
     FLASK_ENV=production \
     FLASK_APP=app.py \
     DEBIAN_FRONTEND=noninteractive
 
-# Install runtime system dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     libgl1-mesa-glx \
     libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set work directory
-WORKDIR /app
-
-# Copy from builder
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-COPY --from=builder /app /app
-
-# Create uploads directory
-RUN mkdir -p /app/uploads
-
-# Expose the port the app runs on
-EXPOSE $PORT
-
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "2", "--threads", "4", "--worker-class", "gthread", "--timeout", "120", "app:app"]
-    libglib2.0-0 \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set work directory
-WORKDIR /app
-
-# Copy from builder
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
-
-# Create a non-root user and switch to it
-RUN useradd -m appuser && \
-    chown -R appuser:appuser /app
-USER appuser
-
-# Create necessary directories with proper permissions
-RUN mkdir -p /app/uploads /app/models && \
-    chown -R appuser:appuser /app/uploads /app/models && \
-    chmod 755 /app/uploads /app/models && \
-    # Make sure the uploads directory is writable by the appuser
-    chown -R appuser:appuser /app/uploads && \
-    chmod -R 755 /app/uploads
-
-# Switch to root for installation
-USER root
-
-# Install wget and curl for downloading files
-RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Create appuser and set up directories
+RUN useradd -m appuser && \
+    mkdir -p /app/uploads /app/models && \
+    chown -R appuser:appuser /app
 
 # Set working directory
 WORKDIR /app
 
 # Copy requirements first to leverage Docker cache
-COPY requirements.txt .
+COPY --chown=appuser:appuser requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Create models directory with correct permissions
-RUN mkdir -p /app/models && \
-    chown -R appuser:appuser /app/models && \
-    chmod 755 /app/models
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Download model files using direct links with wget
 RUN cd /app/models && \
@@ -123,7 +46,7 @@ RUN cd /app/models && \
     chown -R appuser:appuser /app/models
 
 # Copy the rest of the application
-COPY . .
+COPY --chown=appuser:appuser . .
 
 # Verify models were downloaded
 RUN echo "Verifying model files..." && \
@@ -137,11 +60,11 @@ RUN echo "Verifying model files..." && \
 # Make start.sh executable
 RUN chmod +x /app/start.sh
 
-# Switch back to non-root user
+# Switch to non-root user
 USER appuser
 
 # Expose the port the app runs on
-EXPOSE 10000
+EXPOSE $PORT
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \

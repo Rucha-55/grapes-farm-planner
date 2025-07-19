@@ -15,8 +15,7 @@ services:
       touch models/grape_model.h5
       touch models/apple_disease.h5
       touch models/grape_leaf_disease_model.h5
-    startCommand: |
-      python -m gunicorn.app.wsgiapp --config gunicorn_config.py app:app
+    startCommand: bash start.sh
     
     # Environment variables
     envVars:

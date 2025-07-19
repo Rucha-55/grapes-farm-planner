@@ -18,5 +18,13 @@ for model in grape_model.h5 apple_disease.h5 grape_leaf_disease_model.h5; do
     fi
 done
 
-# Start Gunicorn using Python module
-exec python -m gunicorn.app.wsgiapp --config gunicorn_config.py app:app
+# Ensure proper permissions
+chmod -R 755 uploads models
+
+# Install gunicorn if not already installed
+if ! command -v gunicorn &> /dev/null; then
+    pip install --no-cache-dir gunicorn
+fi
+
+# Start Gunicorn
+exec gunicorn --config gunicorn_config.py app:app
