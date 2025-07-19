@@ -4,41 +4,35 @@
 set -e
 
 # Print environment for debugging
-env
+echo "=== Environment Variables ==="
+printenv
+echo "============================"
 
-# Ensure uploads and models directories exist
-mkdir -p uploads
-mkdir -p models
+# Ensure uploads directory exists with proper permissions
+echo "Setting up directories..."
+mkdir -p /app/uploads
+chmod -R 755 /app/uploads
 
-# Set environment variables
-export PYTHONPATH=$(pwd)
-
-# Create placeholder model files if they don't exist
+# Check if model files exist
+echo "Checking model files..."
 for model in grape_model.h5 apple_disease.h5 grape_leaf_disease_model.h5; do
-    if [ ! -f "models/$model" ]; then
-        echo "Creating placeholder for $model"
-        touch "models/$model"
+    if [ -f "/app/models/$model" ]; then
+        echo "Found model: $model"
+        ls -lh "/app/models/$model"
+    else
+        echo "WARNING: Model file not found: $model"
     fi
 done
 
-# Ensure proper permissions
-chmod -R 755 uploads models
-
-# Find Python and Gunicorn paths
-PYTHON_PATH=$(which python3 || which python)
-GUNICORN_PATH=$(which gunicorn || echo "gunicorn not found")
-
-echo "Using Python: $PYTHON_PATH"
-echo "Using Gunicorn: $GUNICORN_PATH"
-
-# Try different ways to start Gunicorn
+# Start Gunicorn
 echo "Starting Gunicorn..."
-
-exec $PYTHON_PATH -m gunicorn.app.wsgiapp \
-  --bind :$PORT \
-  --workers 2 \
-  --threads 4 \
-  --worker-class gthread \
-  --timeout 120 \
-  --log-level=debug \
-  app:app
+exec gunicorn \
+    --bind :$PORT \
+    --workers 2 \
+    --threads 4 \
+    --worker-class gthread \
+    --timeout 120 \
+    --log-level=debug \
+    --access-logfile - \
+    --error-logfile - \
+    app:app

@@ -1,27 +1,12 @@
 # Render Blueprint for Grapes Farm Planner
-# Reference: https://render.com/docs/blueprint-spec
-
+# Using Docker deployment for better dependency management
 services:
   - type: web
     name: grapes-farm-planner
-    env: python
-    python:
-      version: 3.10.13
-    buildCommand: |
-      python -m pip install --upgrade pip
-      pip install gunicorn==20.1.0
-      pip install -r requirements.txt
-      mkdir -p models
-      touch models/grape_model.h5
-      touch models/apple_disease.h5
-      touch models/grape_leaf_disease_model.h5
-      
-      # Create a simple start script
-      echo '#!/bin/bash' > start_app.sh
-      echo 'python -m gunicorn.app.wsgiapp --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app' >> start_app.sh
-      chmod +x start_app.sh
-    
-    startCommand: ./start_app.sh
+    docker:
+      dockerfile: Dockerfile
+      dockerContext: .
+    env: docker
     
     # Environment variables
     envVars:
@@ -32,13 +17,13 @@ services:
       - key: PYTHONUNBUFFERED
         value: 1
       - key: PYTHONPATH
-        value: /opt/render/project/src
+        value: /app
       - key: TF_CPP_MIN_LOG_LEVEL
         value: "3"
       - key: TF_ENABLE_ONEDNN_OPTS
         value: "0"
       - key: UPLOAD_FOLDER
-        value: /opt/render/project/src/uploads
+        value: /app/uploads
       - key: MAX_CONTENT_LENGTH
         value: "16777216"  # 16MB
     
@@ -55,7 +40,7 @@ services:
       - envVar: MONGO_URI
         description: "MongoDB connection string"
         required: true
-      - key: SECRET_KEY
+      - envVar: SECRET_KEY
         generateValue: true
       - envVar: WEATHER_API_KEY
         description: "OpenWeatherMap API key"
