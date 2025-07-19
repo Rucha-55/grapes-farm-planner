@@ -21,23 +21,29 @@ python -m pip install --upgrade pip==23.0.1 setuptools==65.5.0 wheel==0.38.4
 export TF_CPP_MIN_LOG_LEVEL=3
 export TF_ENABLE_ONEDNN_OPTS=0
 
-# Install specific versions of key dependencies first
+# Install core dependencies with specific versions
 echo "📦 Installing core dependencies..."
-pip install numpy==1.24.3
+pip install --upgrade pip==23.0.1
+pip install setuptools==65.5.0 wheel==0.38.4
 
-# Install TensorFlow with specific version
-echo "🤖 Installing TensorFlow..."
-pip install tensorflow==2.10.1
+# Install protobuf first with specific version
+pip install protobuf==3.19.5
 
-# Install core dependencies first
-echo "📦 Installing core dependencies..."
-pip install --upgrade pip setuptools wheel
+# Install TensorFlow and its dependencies
+echo "🤖 Installing TensorFlow and ML dependencies..."
+pip install tensorflow-cpu==2.10.1
+pip install keras==2.10.0
+pip install tensorboard==2.10.1
+pip install numpy==1.23.5
 
-# Install gunicorn and gevent first
+# Install gunicorn and gevent
 pip install gunicorn==20.1.0 gevent==21.12.0
 
 # Install other requirements
-echo "📋 Installing Python dependencies..."
+echo "📋 Installing remaining Python dependencies..."
+pip install -r requirements.txt --no-deps
+
+# Now install all dependencies with dependency resolution
 pip install -r requirements.txt
 
 # Create necessary directories
