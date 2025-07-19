@@ -1,12 +1,13 @@
 # ========================================
 # Builder stage
 # ========================================
-FROM python:3.9-slim as builder
+FROM python:3.10-slim as builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    DEBIAN_FRONTEND=noninteractive
 
 # Set work directory
 WORKDIR /app
@@ -20,11 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
-# Install Python dependencies in a specific order to avoid conflicts
-RUN pip install --upgrade pip && \
+# Install Python dependencies
+RUN pip install --upgrade pip==21.3.1 && \
     pip install --no-cache-dir setuptools==59.6.0 wheel==0.37.1 && \
-    pip install --no-cache-dir numpy==1.23.5 && \
-    pip install --no-cache-dir 'protobuf==3.19.6' --no-deps && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
@@ -33,7 +32,7 @@ COPY . .
 # ========================================
 # Runtime stage
 # ========================================
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -43,11 +42,30 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     TF_CPP_MIN_LOG_LEVEL=3 \
     TF_ENABLE_ONEDNN_OPTS=0 \
     FLASK_ENV=production \
-    FLASK_APP=app.py
+    FLASK_APP=app.py \
+    DEBIAN_FRONTEND=noninteractive
 
 # Install runtime system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set work directory
+WORKDIR /app
+
+# Copy from builder
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /app /app
+
+# Create uploads directory
+RUN mkdir -p /app/uploads
+
+# Expose the port the app runs on
+EXPOSE $PORT
+
+# Command to run the application
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "2", "--threads", "4", "--worker-class", "gthread", "--timeout", "120", "app:app"]
     libglib2.0-0 \
     curl \
     && rm -rf /var/lib/apt/lists/*

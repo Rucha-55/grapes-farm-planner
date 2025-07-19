@@ -4,12 +4,10 @@
 services:
   - type: web
     name: grapes-farm-planner
-    env: python
-    runtime: python3.10  # Force Python 3.10
-    buildCommand: |
-      python -m pip install --upgrade pip==21.3.1
-      pip install -r requirements.txt
-    startCommand: gunicorn app:app --timeout 120 --workers=2 --threads=4 --worker-class=gthread --bind :$PORT
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    dockerCommand: gunicorn --bind :10000 --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app
     
     # Environment variables
     envVars:
@@ -17,20 +15,18 @@ services:
         value: app.py
       - key: FLASK_ENV
         value: production
-      - key: SECRET_KEY
-        generateValue: true
       - key: PORT
         value: 10000
       - key: PYTHONUNBUFFERED
         value: 1
       - key: PYTHONPATH
-        value: /opt/render/project/src
+        value: /app
       - key: TF_CPP_MIN_LOG_LEVEL
         value: "3"
       - key: TF_ENABLE_ONEDNN_OPTS
         value: "0"
       - key: UPLOAD_FOLDER
-        value: /opt/render/project/src/uploads
+        value: /app/uploads
       - key: MAX_CONTENT_LENGTH
         value: "16777216"  # 16MB
     
@@ -47,6 +43,8 @@ services:
       - envVar: MONGO_URI
         description: "MongoDB connection string"
         required: true
+      - key: SECRET_KEY
+        generateValue: true
       - envVar: WEATHER_API_KEY
         description: "OpenWeatherMap API key"
         required: true
