@@ -17,9 +17,10 @@ python -m pip install setuptools==65.5.0 wheel==0.38.4
 export TF_CPP_MIN_LOG_LEVEL=3
 export TF_ENABLE_ONEDNN_OPTS=0
 
-# Install protobuf first with specific version
-echo "📦 Installing protobuf..."
+# Install protobuf and pandas first
+echo "📦 Installing protobuf and pandas..."
 pip install protobuf==3.19.5
+pip install pandas==2.2.2
 
 # Install TensorFlow and its dependencies
 echo "🤖 Installing TensorFlow and ML dependencies..."

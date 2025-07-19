@@ -32,6 +32,7 @@ wheel==0.38.4
 # Utilities
 requests==2.27.1
 tqdm==4.64.0
+pandas==2.2.2
 python-dateutil==2.8.2
 python-pptx==0.6.21
 reportlab==3.6.9
