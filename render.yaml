@@ -15,7 +15,9 @@ services:
       touch models/grape_model.h5
       touch models/apple_disease.h5
       touch models/grape_leaf_disease_model.h5
-    startCommand: gunicorn --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app
+    startCommand: |
+      source venv/bin/activate
+      gunicorn --config gunicorn_config.py app:app
     
     # Environment variables
     envVars:
