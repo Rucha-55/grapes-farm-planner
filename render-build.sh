@@ -4,23 +4,33 @@ set -e
 
 echo "🚀 Starting build process..."
 
-# Install system dependencies
-echo "🔧 Installing system dependencies..."
-apt-get update
-apt-get install -y \
-    python3-pip \
-    python3-venv \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create and activate virtual environment
-echo "🐍 Setting up Python virtual environment..."
-python3 -m venv /opt/venv
-source /opt/venv/bin/activate
+# Check if we're running in a container with read-only filesystem
+if [ -w / ]; then
+    # System is writable, install system dependencies
+    echo "🔧 Installing system dependencies..."
+    apt-get update
+    apt-get install -y \
+        python3-pip \
+        python3-venv \
+        libgl1-mesa-glx \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        && rm -rf /var/lib/apt/lists/*
+    
+    # Create virtual environment in /opt/venv
+    echo "🐍 Setting up Python virtual environment in /opt/venv..."
+    python3 -m venv /opt/venv
+    source /opt/venv/bin/activate
+else
+    # Running in read-only filesystem, use user space
+    echo "🔧 Running in read-only filesystem, using user space..."
+    # Create virtual environment in the project directory
+    echo "🐍 Setting up Python virtual environment in project directory..."
+    python3 -m venv venv
+    source venv/bin/activate
+fi
 
 # Upgrade pip and setuptools
 echo "⬆️ Upgrading pip and setuptools..."
@@ -41,7 +51,11 @@ echo "📂 Creating required directories..."
 mkdir -p uploads
 
 # Download models if needed
-echo "⬇️ Downloading models (if needed)..."
-python download_models.py
+if [ -f "download_models.py" ]; then
+    echo "⬇️ Downloading models (if needed)..."
+    python download_models.py
+else
+    echo "ℹ️ No download_models.py found, skipping model download."
+fi
 
 echo "✅ Build completed successfully!"

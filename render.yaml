@@ -46,9 +46,9 @@ services:
         sync: false  # Will be set in dashboard
     
     # Build and deployment settings
-    buildCommand: ./render-build.sh
-    dockerCommand: gunicorn --config gunicorn_config.py app:app
-    dockerContext: .
+    buildCommand: chmod +x render-build.sh && ./render-build.sh
+    startCommand: gunicorn --worker-tmp-dir /dev/shm --workers=2 --threads=4 --worker-class=gthread --timeout 120 --bind :$PORT app:app
+    env: python3
     
     # Resource allocation (adjust based on your needs)
     plan: free  # Can be upgraded to 'standard' for production
