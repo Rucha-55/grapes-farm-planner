@@ -3,6 +3,7 @@ import multiprocessing
 
 # Server socket
 bind = '0.0.0.0:' + os.environ.get('PORT', '10000')
+chdir = os.path.dirname(os.path.abspath(__file__))
 
 # Worker processes
 workers = min(multiprocessing.cpu_count() * 2 + 1, 4)  # Optimized worker count

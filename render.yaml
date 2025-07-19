@@ -16,8 +16,7 @@ services:
       touch models/apple_disease.h5
       touch models/grape_leaf_disease_model.h5
     startCommand: |
-      source venv/bin/activate
-      gunicorn --config gunicorn_config.py app:app
+      python -m gunicorn.app.wsgiapp --config gunicorn_config.py app:app
     
     # Environment variables
     envVars:
