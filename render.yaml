@@ -10,8 +10,11 @@ services:
     buildCommand: |
       python -m pip install --upgrade pip==21.3.1
       pip install protobuf>=3.19.5,<4.0.0
-      pip install -r requirements.txt --no-deps
       pip install -r requirements.txt
+      mkdir -p models
+      touch models/grape_model.h5
+      touch models/apple_disease.h5
+      touch models/grape_leaf_disease_model.h5
     startCommand: gunicorn --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app
     
     # Environment variables
