@@ -21,10 +21,5 @@ done
 # Ensure proper permissions
 chmod -R 755 uploads models
 
-# Install gunicorn if not already installed
-if ! command -v gunicorn &> /dev/null; then
-    pip install --no-cache-dir gunicorn
-fi
-
-# Start Gunicorn
-exec gunicorn --config gunicorn_config.py app:app
+# Start Gunicorn using the Python module syntax
+exec python -m gunicorn.app.wsgiapp --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 app:app
