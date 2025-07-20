@@ -5,9 +5,9 @@ import multiprocessing
 bind = '0.0.0.0:' + os.environ.get('PORT', '10000')
 chdir = os.path.dirname(os.path.abspath(__file__))
 
-# Worker processes
+# Worker processes - Use sync workers instead of gevent
 workers = min(multiprocessing.cpu_count() * 2 + 1, 4)  # Optimized worker count
-worker_class = 'gevent'  # Using gevent for better I/O handling
+worker_class = 'sync'  # Changed from gevent to sync to avoid zope.event issues
 worker_connections = 1000
 
 # Timeouts

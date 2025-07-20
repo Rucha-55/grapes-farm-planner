@@ -8,17 +8,18 @@ services:
     
     # Build and start commands
     buildCommand: |
-      python -m pip install --upgrade pip==25.1.1
-      pip install -r requirements.txt
+      python -m pip install --upgrade pip
+      pip install -r requirements-minimal.txt
       mkdir -p uploads
       mkdir -p models
+      mkdir -p static/uploads
       touch models/grape_model.h5
       touch models/apple_disease.h5
       touch models/grape_leaf_disease_model.h5
       touch models/scaler.pkl
       touch models/label_encoder.pkl
     
-    startCommand: gunicorn --bind :$PORT --workers 2 --threads 4 --worker-class gthread --timeout 120 --log-level=debug app:app
+    startCommand: gunicorn --bind :$PORT --workers 2 --threads 4 --worker-class sync --timeout 120 --log-level=info app:app
     
     # Environment variables
     envVars:

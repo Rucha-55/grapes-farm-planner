@@ -1,32 +1,40 @@
-# Core
-Flask==2.3.3
-Werkzeug==2.3.7
-python-dotenv==1.0.0
+# Core Flask
+Flask==2.0.3
+Werkzeug==2.0.3
+python-dotenv==0.19.2
 
 # Database
-pymongo==4.5.0
-dnspython==2.4.2
+pymongo==3.12.3
+dnspython==2.1.0
 
-# Machine Learning
-tensorflow-cpu>=2.16.0
-protobuf>=4.25.0
-opencv-python-headless>=4.8.0.74
-numpy>=1.26.0
-Pillow>=10.0.0
-scikit-learn>=1.3.0
-h5py>=3.9.0
+# Web Server
+gunicorn==20.1.0
 
-# Web
-Flask-CORS==4.0.0
-python-multipart==0.0.6
+# Basic ML (minimal)
+numpy==1.23.5
+Pillow==9.1.1
+scikit-learn==1.1.1
+joblib==1.1.0
+
+# TensorFlow (CPU only)
+tensorflow-cpu==2.10.1
+protobuf==3.19.5
+h5py==3.7.0
+keras==2.10.0
+
+# Web utilities
+Flask-CORS==3.0.10
+python-multipart==0.0.5
+requests==2.27.1
 
 # Utilities
-requests>=2.25.1
-tqdm>=4.56.0
+pandas==2.2.2
 python-dateutil==2.8.2
-python-pptx==0.6.23
-reportlab==4.0.4
-joblib==1.2.0
+reportlab==3.6.9
 
+# AI APIs
 google-generativeai==0.3.2
+
+# Render deployment
 setuptools==65.5.0
+wheel==0.38.4

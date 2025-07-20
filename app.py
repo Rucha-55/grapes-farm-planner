@@ -187,10 +187,35 @@ if not os.path.exists('models/scaler.pkl') or os.path.getsize('models/scaler.pkl
 
 # Load scaler and encoder
 try:
+    import numpy as np
     scaler = joblib.load('models/scaler.pkl')
     encoder = joblib.load('models/label_encoder.pkl')
 except Exception as e:
     print(f"⚠️  Warning: Could not load scaler or encoder: {e}")
+    # Create dummy scaler and encoder if loading fails
+    try:
+        from sklearn.preprocessing import StandardScaler, LabelEncoder
+        
+        # Create and save a dummy scaler
+        dummy_scaler = StandardScaler()
+        dummy_scaler.scale_ = np.array([1.0])
+        dummy_scaler.mean_ = np.array([0.0])
+        dummy_scaler.var_ = np.array([1.0])
+        dummy_scaler.n_features_in_ = 1
+        joblib.dump(dummy_scaler, 'models/scaler.pkl')
+        
+        # Create and save a dummy encoder
+        dummy_encoder = LabelEncoder()
+        dummy_encoder.classes_ = np.array(['dummy_class'])
+        joblib.dump(dummy_encoder, 'models/label_encoder.pkl')
+        
+        scaler = dummy_scaler
+        encoder = dummy_encoder
+        print("✅ Created and loaded dummy scaler and encoder")
+    except Exception as e2:
+        print(f"❌ Failed to create dummy scaler/encoder: {e2}")
+        scaler = None
+        encoder = None
 
 # Function to create a dummy model
 def create_dummy_model():
