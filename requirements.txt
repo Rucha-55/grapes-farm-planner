@@ -16,7 +16,6 @@ Pillow==9.1.1
 scikit-learn==1.1.1
 h5py==3.7.0
 keras==2.10.0
-tensorboard==2.10.1
 
 # Web
 Flask-CORS==3.0.10
@@ -38,6 +37,5 @@ python-pptx==0.6.21
 reportlab==3.6.9
 joblib==1.1.0
 
+# AI/ML APIs
 google-generativeai==0.3.2
-setuptools==65.5.0
-pip==25.1.1

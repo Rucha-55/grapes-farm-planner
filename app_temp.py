@@ -1,6 +1,3 @@
-# Suppress TensorFlow and Keras logs
-import os
-from datetime import datetime
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0=INFO, 1=WARNING, 2=ERROR, 3=FATAL
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations that cause logs
@@ -235,6 +232,9 @@ USING_DUMMY_MODELS = any([
     not os.path.exists(f"models/{f}") or os.path.getsize(f"models/{f}") < 1000000
     for f in ["grape_model.h5", "apple_disease.h5", "grape_leaf_disease_model.h5"]
 ])
+    print(f"Error loading models: {e}")
+    # You might want to handle this error more gracefully in production
+    raise
 
 # Class labels for grape diseases
 class_names = ['Black Rot', 'Leaf Blight', 'Healthy', 'ESCA']
